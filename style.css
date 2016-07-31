@@ -46,6 +46,16 @@ div#actionbuttons {
 }
 
 
+.inventoryitem  > button {
+    width: 200px;
+    margin: 10px;
+}
+
+.inventoryempty {
+    color: #EEEEEE;
+    font-family: 'Oswald', sans-serif;
+    text-align: center;
+}
 
 rect.entity {
     fill-opacity: 0;

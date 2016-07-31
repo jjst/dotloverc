@@ -1,5 +1,6 @@
 module Scene exposing (..)
 
+import List
 import String
 import Html exposing (Html, div, button, img)
 import Html.Attributes as HA
@@ -50,7 +51,7 @@ init = {
    currentAction = Look
    , entities = streetEntities
    , infoText = ""
-   , inventory = []
+   , inventory = [ "A banana", "5 dollars" ]
    }
 
 type Action
@@ -93,12 +94,17 @@ update message model =
 
 -- View
 
-renderButton : Action -> Action -> Html Msg
-renderButton currentAction a =
+renderActionButton : Action -> Action -> Html Msg
+renderActionButton currentAction a =
     let
         classes = HA.classList [ ("selected", a == currentAction) ]
     in
         button [ onClick (ChangeAction a), classes ] [ text (toString a) ]
+
+renderInventoryItem : Item -> Html Msg
+renderInventoryItem item =
+    div [ class "inventoryitem" ] [ button [] [ text item ] ]
+
 
 view : Model -> Html Msg
 view ({inventory, currentAction, infoText} as model) =
@@ -108,11 +114,16 @@ view ({inventory, currentAction, infoText} as model) =
                 Move -> "s-resize"
                 Take -> "grab"
                 Look -> "zoom-in"
-        buttons = List.map (renderButton currentAction) [Look, Move, Take]
+        actionButtons = List.map (renderActionButton currentAction) [Look, Move, Take]
+        inventoryItems =
+            if List.isEmpty inventory then
+               [ div [ class "inventoryempty" ] [ text "(empty)" ] ]
+            else
+               List.map renderInventoryItem inventory
         actionPane =
             div [ id "left" ]
                 [ div [ class "menutitle" ] [ text "Actions" ]
-                , div [ id "actionbuttons" ] buttons
+                , div [ id "actionbuttons" ] actionButtons
                 , div [ class "infoText" ] [ text infoText ]
                 ]
         mainPane =
@@ -121,6 +132,7 @@ view ({inventory, currentAction, infoText} as model) =
         inventoryPane =
             div [ id "right" ]
                 [ div [ class "menutitle" ] [ text "Inventory" ]
+                , div [ class "inventory" ] inventoryItems
                 ]
     in
        div [ HA.id "container" ] [ actionPane, mainPane, inventoryPane ]
