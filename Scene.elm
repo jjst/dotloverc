@@ -1,5 +1,6 @@
 module Cell exposing (..)
 
+import String
 import Html exposing (Html, div, button)
 import Html.App as App
 import Html.Events exposing (onClick)
@@ -22,12 +23,12 @@ type alias Rect = {
     width : Int,
     height : Int
 }
-type EntityType = Simple | Location | Item { name: String }
+type EntityKind = Simple | Location | Item { name: String }
 
 type alias Entity = {
     hitbox : Rect,
     description : String,
-    type_ : EntityType
+    kind : EntityKind
 }
 
 type alias Model = 
@@ -40,8 +41,8 @@ type alias Model =
 type alias Item = String
 
 streetEntities =
-    [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", type_ = Location }
-    , { hitbox = { x = 400, y = 0, width = 50, height = 50 }, description = "sky", type_ = Item { name = "sky" } }
+    [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", kind = Location }
+    , { hitbox = { x = 400, y = 0, width = 50, height = 50 }, description = "sky", kind = Item { name = "sky" } }
     ]
 
 init = {
@@ -77,7 +78,7 @@ update message model =
                     { model | infoText = entity.description }
 
                 Take ->
-                    case entity.type_ of
+                    case entity.kind of
                         Item { name } ->
                             { model | inventory = (name :: model.inventory), entities = List.filter (\e -> e /= entity) model.entities }
                         _ ->
@@ -88,14 +89,15 @@ update message model =
 -- View
 
 view : Model -> Html Msg
-view model =
+view ({inventory, currentAction, infoText} as model) =
     div [] [ svg [viewBox "0 0 800 600", width "800px"] [(svgView model)]
+           , div [] [ text infoText ]
            , div [] 
-               [ text (model.infoText ++ " --  Current action is " ++ (toString model.currentAction))
-               , button [ onClick (ChangeAction Look) ] [ text "Look!" ]
+               [ button [ onClick (ChangeAction Look) ] [ text "Look!" ]
                , button [ onClick (ChangeAction Move) ] [ text "Move" ]
                , button [ onClick (ChangeAction Take) ] [ text "Take" ]
                ]
+           , div [] [ text ("Inventory: " ++ (if List.isEmpty inventory then "(empty)" else (String.join " ⚫ " inventory))) ]
            ]
 
 
