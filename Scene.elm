@@ -25,7 +25,8 @@ type alias Rect = {
     width : Int,
     height : Int
 }
-type EntityKind = Simple | Location | Item { name: String }
+
+type EntityKind = Simple | Portal Location | Item { name: String }
 
 type alias Entity = {
     hitbox : Rect,
@@ -56,22 +57,40 @@ type alias Model =
     , inventory: List InventoryItem
     }
 
+changeLocation : Location -> Model -> Model
+changeLocation location ({currentLocation, otherLocations} as model) =
+    case otherLocations |> List.filter (\e -> e.location == location) |> List.head of
+        Just nextLocation ->
+            { model
+                | currentLocation = nextLocation
+                , otherLocations = (currentLocation :: otherLocations) |> List.filter (\e -> e.location /= location)
+            }
+        Nothing -> { model | infoText = "invalid location" }
+
 type alias InventoryItem = String
 
 apartment =
     { imagePath = "img/apartment.jpg"
     , entities =
-        [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", kind = Location }
+        [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", kind = Portal RC }
         , { hitbox = { x = 400, y = 0, width = 50, height = 50 }, description = "sky", kind = Item { name = "sky" } }
         ]
     , location = Apartment
+    }
+
+rc_workshop =
+    { imagePath = "img/rc_workshop.jpg"
+    , entities =
+        [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", kind = Portal Apartment }
+        ]
+    , location = RC
     }
 
 
 init = {
    currentAction = Look
    , currentLocation = apartment
-   , otherLocations = []
+   , otherLocations = [rc_workshop]
    , infoText = "You wake up all alone, and all your friends are dead. Welcome to the game!"
    , inventory = [ "A banana", "5 dollars" ]
    }
@@ -111,8 +130,12 @@ update message model =
                             }
                         _ ->
                             { model | infoText = "You can't take that." }
-                _ ->
-                    model
+                Move ->
+                    case entity.kind of
+                        Portal location ->
+                            changeLocation location model
+                        _ ->
+                            { model | infoText = "You can't walk there." }
 
 -- View
 
@@ -144,7 +167,7 @@ view ({inventory, currentAction, infoText} as model) =
                List.map renderInventoryItem inventory
         entityRects = List.map svgViewEntity model.currentLocation.entities
         sceneView =
-            g [] ([ image [ xlinkHref "img/apartment.jpg", x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
+            g [] ([ image [ xlinkHref model.currentLocation.imagePath, x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
         actionPane =
             div [ id "left" ]
                 [ div [ class "menutitle" ] [ text "Actions" ]
