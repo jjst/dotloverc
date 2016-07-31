@@ -18,7 +18,7 @@ main =
 
 -- Model
 
-type alias Rect = { 
+type alias Rect = {
     x : Int,
     y : Int,
     width : Int,
@@ -32,8 +32,8 @@ type alias Entity = {
     kind : EntityKind
 }
 
-type alias Model = 
-    { currentAction: Action 
+type alias Model =
+    { currentAction: Action
     , entities: List Entity
     , infoText : String
     , inventory: List Item
@@ -68,7 +68,7 @@ type Msg
 
 
 update : Msg -> Model -> Model
-update message model = 
+update message model =
     case message of
         ChangeAction action ->
             { model | currentAction = action }
@@ -99,9 +99,14 @@ renderButton currentAction a =
 view : Model -> Html Msg
 view ({inventory, currentAction, infoText} as model) =
     let
+        cursor =
+            case currentAction of
+                Move -> "s-resize"
+                Take -> "grab"
+                Look -> "zoom-in"
         buttons = List.map (renderButton currentAction) [Look, Move, Take]
     in
-        div [] [ svg [viewBox "0 0 800 600", width "800px"] [(svgView model)]
+        div [ HA.style [("cursor", cursor)] ] [ svg [viewBox "0 0 800 600", width "800px"] [(svgView model)]
                , div [] [ text infoText ]
                , div [] buttons
                , div [] [ text ("Inventory: " ++ (if List.isEmpty inventory then "(empty)" else (String.join " ⚫ " inventory))) ]
@@ -119,7 +124,7 @@ svgViewEntity ({hitbox} as e) =
     rect [ x x_, y y_, height h, width w, SA.class "entity debug", onClick (ExecuteAction e) ] []
 
 svgView : Model -> Svg Msg
-svgView model = 
+svgView model =
     let
         rects = List.map svgViewEntity model.entities
     in
