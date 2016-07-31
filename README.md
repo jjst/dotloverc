@@ -9,4 +9,4 @@ Building
 --------
 
 You need Elm.
-Run `./test.sh` then open `index.html` in your browser.
+Run `./build.sh` then open `index.html` in your browser.
