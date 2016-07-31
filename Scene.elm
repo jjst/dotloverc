@@ -50,7 +50,7 @@ streetEntities =
 init = {
    currentAction = Look
    , entities = streetEntities
-   , infoText = ""
+   , infoText = "You wake up all alone, and all your friends are dead. Welcome to the game!"
    , inventory = [ "A banana", "5 dollars" ]
    }
 
@@ -124,7 +124,7 @@ view ({inventory, currentAction, infoText} as model) =
             div [ id "left" ]
                 [ div [ class "menutitle" ] [ text "Actions" ]
                 , div [ id "actionbuttons" ] actionButtons
-                , div [ class "infoText" ] [ text infoText ]
+                , div [ class "infotext" ] [ text infoText ]
                 ]
         mainPane =
             div [ id "middle", HA.style [("cursor", cursor)] ]
