@@ -1,0 +1,17 @@
+button {
+    background-color: #CBE86B;
+    border: none;
+    color: #1C140D;
+    padding: 15px 32px;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 16px;
+}
+
+button.selected {
+    background-color: #CBE8AB;
+}

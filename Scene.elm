@@ -1,4 +1,4 @@
-module Cell exposing (..)
+module Scene exposing (..)
 
 import String
 import Html exposing (Html, div, button)
