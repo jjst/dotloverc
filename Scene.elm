@@ -122,7 +122,7 @@ view ({inventory, currentAction, infoText} as model) =
                List.map renderInventoryItem inventory
         entityRects = List.map svgViewEntity model.entities
         sceneView =
-            g [] ([ image [ xlinkHref "img/rc_workshop.jpg", x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
+            g [] ([ image [ xlinkHref "img/apartment.jpg", x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
         actionPane =
             div [ id "left" ]
                 [ div [ class "menutitle" ] [ text "Actions" ]
