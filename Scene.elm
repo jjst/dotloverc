@@ -65,7 +65,7 @@ changeLocation location ({currentLocation, otherLocations} as model) =
                 | currentLocation = nextLocation
                 , otherLocations = (currentLocation :: otherLocations) |> List.filter (\e -> e.location /= location)
             }
-        Nothing -> { model | infoText = "invalid location" }
+        Nothing -> { model | infoText = "Developer Error: portal to unknown location => " ++ (toString location) }
 
 type alias InventoryItem = String
 
