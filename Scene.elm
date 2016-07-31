@@ -81,7 +81,11 @@ update message model =
                 Take ->
                     case entity.kind of
                         Item { name } ->
-                            { model | inventory = (name :: model.inventory), entities = List.filter (\e -> e /= entity) model.entities }
+                            { model
+                                | inventory = (name :: model.inventory)
+                                , entities = List.filter (\e -> e /= entity) model.entities
+                                , infoText = ("You have acquired " ++ name ++ "!")
+                            }
                         _ ->
                             { model | infoText = "You can't take that." }
                 _ ->
