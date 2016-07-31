@@ -116,7 +116,7 @@ svgViewEntity ({hitbox} as e) =
         w = toString hitbox.width
         h = toString hitbox.height
     in
-    rect [ x x_, y y_, height h, width w, SA.class "entity", onClick (ExecuteAction e) ] []
+    rect [ x x_, y y_, height h, width w, SA.class "entity debug", onClick (ExecuteAction e) ] []
 
 svgView : Model -> Svg Msg
 svgView model = 

@@ -18,5 +18,8 @@ button.selected {
 
 rect.entity {
     fill-opacity: 0;
+}
+
+rect.debug {
     stroke: blue;
 }
