@@ -90,8 +90,11 @@ rect.debug {
 
 div#middle {
     width: 57%;
-    background-image:url('img/rc_workshop.jpg');
     background-repeat:no-repeat;
     background-size:contain;
     height:100vh;
+}
+
+div#middle > svg {
+    width: 100%;
 }

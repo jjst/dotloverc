@@ -128,7 +128,9 @@ view ({inventory, currentAction, infoText} as model) =
                 ]
         mainPane =
             div [ id "middle", HA.style [("cursor", cursor)] ]
-                [ ]
+                [ svg [ viewBox "0 0 1080 1080" ]
+                      [ image [ xlinkHref "img/rc_workshop.jpg", x "0", y "0", height "1080", width "1080" ] [] ]
+                ]
         inventoryPane =
             div [ id "right" ]
                 [ div [ class "menutitle" ] [ text "Inventory" ]
