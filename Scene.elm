@@ -33,23 +33,45 @@ type alias Entity = {
     kind : EntityKind
 }
 
-type alias Model =
-    { currentAction: Action
-    , entities: List Entity
-    , infoText : String
-    , inventory: List Item
+type Location
+    = Apartment
+    | RC
+
+type alias LocationProperties =
+    { imagePath : String
+    , entities : List Entity
+    , location : Location
     }
 
-type alias Item = String
+-- Entity should be constrained to kind == Item
+takeItemFromLocation : Entity -> LocationProperties -> LocationProperties
+takeItemFromLocation entity props =
+    { props | entities = List.filter (\e -> e /= entity) props.entities }
 
-streetEntities =
-    [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", kind = Location }
-    , { hitbox = { x = 400, y = 0, width = 50, height = 50 }, description = "sky", kind = Item { name = "sky" } }
-    ]
+type alias Model =
+    { currentAction: Action
+    , currentLocation: LocationProperties
+    , otherLocations: List LocationProperties
+    , infoText : String
+    , inventory: List InventoryItem
+    }
+
+type alias InventoryItem = String
+
+apartment =
+    { imagePath = "img/apartment.jpg"
+    , entities =
+        [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", kind = Location }
+        , { hitbox = { x = 400, y = 0, width = 50, height = 50 }, description = "sky", kind = Item { name = "sky" } }
+        ]
+    , location = Apartment
+    }
+
 
 init = {
    currentAction = Look
-   , entities = streetEntities
+   , currentLocation = apartment
+   , otherLocations = []
    , infoText = "You wake up all alone, and all your friends are dead. Welcome to the game!"
    , inventory = [ "A banana", "5 dollars" ]
    }
@@ -84,7 +106,7 @@ update message model =
                         Item { name } ->
                             { model
                                 | inventory = (name :: model.inventory)
-                                , entities = List.filter (\e -> e /= entity) model.entities
+                                , currentLocation = takeItemFromLocation entity model.currentLocation
                                 , infoText = ("You have acquired " ++ name ++ "!")
                             }
                         _ ->
@@ -101,7 +123,7 @@ renderActionButton currentAction a =
     in
         button [ onClick (ChangeAction a), classes ] [ text (toString a) ]
 
-renderInventoryItem : Item -> Html Msg
+renderInventoryItem : InventoryItem -> Html Msg
 renderInventoryItem item =
     div [ class "inventoryitem" ] [ button [] [ text item ] ]
 
@@ -120,7 +142,7 @@ view ({inventory, currentAction, infoText} as model) =
                [ div [ class "inventoryempty" ] [ text "(empty)" ] ]
             else
                List.map renderInventoryItem inventory
-        entityRects = List.map svgViewEntity model.entities
+        entityRects = List.map svgViewEntity model.currentLocation.entities
         sceneView =
             g [] ([ image [ xlinkHref "img/apartment.jpg", x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
         actionPane =
