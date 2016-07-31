@@ -2,6 +2,7 @@ module Cell exposing (..)
 
 import String
 import Html exposing (Html, div, button)
+import Html.Attributes exposing (classList)
 import Html.App as App
 import Html.Events exposing (onClick)
 import Svg exposing (..)
@@ -88,17 +89,23 @@ update message model =
 
 -- View
 
+renderButton : Action -> Action -> Html Msg
+renderButton currentAction a =
+    let
+        classes = classList [ ("selected", a == currentAction) ]
+    in
+        button [ onClick (ChangeAction a), classes ] [ text (toString a) ]
+
 view : Model -> Html Msg
 view ({inventory, currentAction, infoText} as model) =
-    div [] [ svg [viewBox "0 0 800 600", width "800px"] [(svgView model)]
-           , div [] [ text infoText ]
-           , div [] 
-               [ button [ onClick (ChangeAction Look) ] [ text "Look!" ]
-               , button [ onClick (ChangeAction Move) ] [ text "Move" ]
-               , button [ onClick (ChangeAction Take) ] [ text "Take" ]
+    let
+        buttons = List.map (renderButton currentAction) [Look, Move, Take]
+    in
+        div [] [ svg [viewBox "0 0 800 600", width "800px"] [(svgView model)]
+               , div [] [ text infoText ]
+               , div [] buttons
+               , div [] [ text ("Inventory: " ++ (if List.isEmpty inventory then "(empty)" else (String.join " ⚫ " inventory))) ]
                ]
-           , div [] [ text ("Inventory: " ++ (if List.isEmpty inventory then "(empty)" else (String.join " ⚫ " inventory))) ]
-           ]
 
 
 svgViewEntity : Entity -> Svg Msg
