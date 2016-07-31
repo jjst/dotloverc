@@ -56,9 +56,7 @@ rect.debug {
 }
 
 #container {
-    height: 100%;
-    width:100%;
-    font-size:0;
+    display: flex;
 }
 
 #left, #middle, #right {display: inline-block; *display: inline; zoom: 1; vertical-align: top; font-size: 12px;}
@@ -70,6 +68,7 @@ rect.debug {
 
 #right {
     height:100vh;
+    flex-grow: 100;
 }
 
 div#middle {
