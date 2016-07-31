@@ -123,6 +123,6 @@ svgView model =
     let
         rects = List.map svgViewEntity model.entities
     in
-        g [] ([ image [ xlinkHref "img/street_small.jpg", x "0", y "0", height "416", width "800" ] [] ] ++ rects)
+        g [] ([ image [ xlinkHref "img/kitchen_600.png", x "0", y "0", height "768", width "1024" ] [] ] ++ rects)
 
 
