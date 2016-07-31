@@ -120,6 +120,9 @@ view ({inventory, currentAction, infoText} as model) =
                [ div [ class "inventoryempty" ] [ text "(empty)" ] ]
             else
                List.map renderInventoryItem inventory
+        entityRects = List.map svgViewEntity model.entities
+        sceneView =
+            g [] ([ image [ xlinkHref "img/rc_workshop.jpg", x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
         actionPane =
             div [ id "left" ]
                 [ div [ class "menutitle" ] [ text "Actions" ]
@@ -128,9 +131,7 @@ view ({inventory, currentAction, infoText} as model) =
                 ]
         mainPane =
             div [ id "middle", HA.style [("cursor", cursor)] ]
-                [ svg [ viewBox "0 0 1080 1080" ]
-                      [ image [ xlinkHref "img/rc_workshop.jpg", x "0", y "0", height "1080", width "1080" ] [] ]
-                ]
+                [ svg [ viewBox "0 0 1080 1080" ] [ sceneView ] ]
         inventoryPane =
             div [ id "right" ]
                 [ div [ class "menutitle" ] [ text "Inventory" ]
@@ -154,12 +155,3 @@ svgViewEntity ({hitbox} as e) =
         h = toString hitbox.height
     in
     rect [ x x_, y y_, height h, width w, SA.class "entity debug", onClick (ExecuteAction e) ] []
-
-svgView : Model -> Svg Msg
-svgView model =
-    let
-        rects = List.map svgViewEntity model.entities
-    in
-        g [] ([ image [ xlinkHref "img/rc_workshop.jpg", x "0", y "0", height "768", width "1024" ] [] ] ++ rects)
-
-
