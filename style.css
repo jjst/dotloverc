@@ -15,3 +15,8 @@ button {
 button.selected {
     background-color: #CBE8AB;
 }
+
+rect.entity {
+    fill-opacity: 0;
+    stroke: blue;
+}

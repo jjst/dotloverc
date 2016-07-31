@@ -2,7 +2,7 @@ module Scene exposing (..)
 
 import String
 import Html exposing (Html, div, button)
-import Html.Attributes exposing (classList)
+import Html.Attributes as HA
 import Html.App as App
 import Html.Events exposing (onClick)
 import Svg exposing (..)
@@ -92,7 +92,7 @@ update message model =
 renderButton : Action -> Action -> Html Msg
 renderButton currentAction a =
     let
-        classes = classList [ ("selected", a == currentAction) ]
+        classes = HA.classList [ ("selected", a == currentAction) ]
     in
         button [ onClick (ChangeAction a), classes ] [ text (toString a) ]
 
@@ -116,7 +116,7 @@ svgViewEntity ({hitbox} as e) =
         w = toString hitbox.width
         h = toString hitbox.height
     in
-    rect [ x x_, y y_, height h, width w, SA.style "fill:red", onClick (ExecuteAction e) ] []
+    rect [ x x_, y y_, height h, width w, SA.class "entity", onClick (ExecuteAction e) ] []
 
 svgView : Model -> Svg Msg
 svgView model = 
