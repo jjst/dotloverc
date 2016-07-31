@@ -7,8 +7,6 @@ import Svg exposing (..)
 import Svg.Attributes as SA
 import Svg.Attributes exposing (..)
 
-
-
 main =
     App.beginnerProgram
         { model = init
@@ -24,21 +22,34 @@ type alias Rect = {
     width : Int,
     height : Int
 }
+type EntityType = Simple | Location | Item { name: String }
 
-type alias InteractiveElement = { coords: Rect, action: Action -> Model -> Model }
-
-interactiveElements =
-    [ { coords = { x = 0, y = 0, width = 300, height = 300 }, action = (\action model -> { model | infoText = "Clicked on first rec" }) }
-    , { coords = { x = 400, y = 0, width = 50, height = 50 }, action = (\action model -> { model | infoText = "Clicked on second rec" }) }
-    ]
-
-
-init = { currentAction = Look , infoText = "" }
+type alias Entity = {
+    hitbox : Rect,
+    description : String,
+    type_ : EntityType
+}
 
 type alias Model = 
     { currentAction: Action 
+    , entities: List Entity
     , infoText : String
+    , inventory: List Item
     }
+
+type alias Item = String
+
+streetEntities =
+    [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", type_ = Location }
+    , { hitbox = { x = 400, y = 0, width = 50, height = 50 }, description = "sky", type_ = Item { name = "sky" } }
+    ]
+
+init = {
+   currentAction = Look
+   , entities = streetEntities
+   , infoText = ""
+   , inventory = []
+   }
 
 type Action
    = Look
@@ -51,15 +62,28 @@ type Action
 -- Update
 type Msg
     = ChangeAction Action
-    | ExecuteAction InteractiveElement
+    | ExecuteAction Entity
 
 
 update : Msg -> Model -> Model
 update message model = 
     case message of
-        ChangeAction action -> { model | currentAction = action }
-        ExecuteAction element -> element.action model.currentAction model
+        ChangeAction action ->
+            { model | currentAction = action }
 
+        ExecuteAction entity ->
+            case model.currentAction of
+                Look ->
+                    { model | infoText = entity.description }
+
+                Take ->
+                    case entity.type_ of
+                        Item { name } ->
+                            { model | inventory = (name :: model.inventory), entities = List.filter (\e -> e /= entity) model.entities }
+                        _ ->
+                            { model | infoText = "You can't take that." }
+                _ ->
+                    model
 
 -- View
 
@@ -75,20 +99,20 @@ view model =
            ]
 
 
-svgViewInteractiveElement : InteractiveElement -> Svg Msg
-svgViewInteractiveElement ({coords, action} as e) = 
+svgViewEntity : Entity -> Svg Msg
+svgViewEntity ({hitbox} as e) =
     let
-        x_ = toString coords.x
-        y_ = toString coords.y
-        h = toString coords.height
-        w = toString coords.width
+        x_ = toString hitbox.x
+        y_ = toString hitbox.y
+        w = toString hitbox.width
+        h = toString hitbox.height
     in
     rect [ x x_, y y_, height h, width w, SA.style "fill:red", onClick (ExecuteAction e) ] []
 
 svgView : Model -> Svg Msg
 svgView model = 
     let
-        rects = List.map svgViewInteractiveElement interactiveElements
+        rects = List.map svgViewEntity model.entities
     in
         g [] ([ image [ xlinkHref "img/street_small.jpg", x "0", y "0", height "416", width "800" ] [] ] ++ rects)
 
