@@ -1,7 +1,7 @@
 module Scene exposing (..)
 
 import String
-import Html exposing (Html, div, button)
+import Html exposing (Html, div, button, img)
 import Html.Attributes as HA
 import Html.App as App
 import Html.Events exposing (onClick)
@@ -109,12 +109,26 @@ view ({inventory, currentAction, infoText} as model) =
                 Take -> "grab"
                 Look -> "zoom-in"
         buttons = List.map (renderButton currentAction) [Look, Move, Take]
+        actionPane =
+            div [ id "left" ]
+                [ div [ class "menutitle" ] [ text "Actions" ]
+                , div [ id "actionbuttons" ] buttons
+                , div [ class "infoText" ] [ text infoText ]
+                ]
+        mainPane =
+            div [ id "middle", HA.style [("cursor", cursor)] ]
+                [ ]
+        inventoryPane =
+            div [ id "right" ]
+                [ div [ class "menutitle" ] [ text "Inventory" ]
+                ]
     in
-        div [ HA.style [("cursor", cursor)] ] [ svg [viewBox "0 0 800 600", width "800px"] [(svgView model)]
-               , div [] [ text infoText ]
-               , div [] buttons
+       div [ HA.id "container" ] [ actionPane, mainPane, inventoryPane ]
+   {--
+        div [  ] [ svg [viewBox "0 0 800 600", width "800px"] [(svgView model)]
                , div [] [ text ("Inventory: " ++ (if List.isEmpty inventory then "(empty)" else (String.join " ⚫ " inventory))) ]
                ]
+               --}
 
 
 svgViewEntity : Entity -> Svg Msg
@@ -132,6 +146,6 @@ svgView model =
     let
         rects = List.map svgViewEntity model.entities
     in
-        g [] ([ image [ xlinkHref "img/kitchen_600.png", x "0", y "0", height "768", width "1024" ] [] ] ++ rects)
+        g [] ([ image [ xlinkHref "img/rc_workshop.jpg", x "0", y "0", height "768", width "1024" ] [] ] ++ rects)
 
 
