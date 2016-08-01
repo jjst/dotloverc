@@ -147,9 +147,9 @@ apartment =
             }
 
             , { kind = Item Keyfob
-            , hitbox = { x = 500, y = 900, width = 50, height = 50 }
+            , hitbox = { x = 936, y = 630, width = 80, height = 30 }
             , description = "A grey plastic device attached to a keyring."
-            , imagePath = Nothing
+            , imagePath = Just "items/keyfob.png"
             }
         ]
     }
