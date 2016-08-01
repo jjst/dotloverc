@@ -241,8 +241,12 @@ lockedComputer =
 rcWorkshop =
     { location = RCWorkshop
     , imagePath = "rc_workshop.jpg"
-    , entities =
-        [ lockedComputer ]
+    , entities = [ lockedComputer
+                 , portalTo RCStreet
+                     { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+                     , description = "A path through the building leading back to the street."
+                     }
+                 ]
     }
 
 type Action
