@@ -89,6 +89,36 @@ changeLocation location ({currentLocation, otherLocations} as model) =
             }
         Nothing -> { model | infoText = "Developer Error: portal to unknown location => " ++ (toString location) }
 
+replaceEntity : Entity -> Entity -> LocationProperties -> LocationProperties
+replaceEntity entity newEntity location =
+    { location | entities = (newEntity :: location.entities) |> List.filter (\e -> e /= entity) }
+
+removeItem : InventoryItem -> List InventoryItem -> List InventoryItem
+removeItem item list = list |> List.filter (\i -> i /= item)
+
+useItem : InventoryItem -> Entity -> Model -> Model
+useItem item entity ({inventory, currentLocation} as model) =
+    case entity.kind of
+        Replaceable {replacedWith, requiredItem} ->
+            if item == requiredItem then
+                { model
+                | inventory = removeItem item model.inventory
+                , currentLocation = replaceEntity entity replacedWith currentLocation
+                , currentAction = Look
+                }
+
+            else
+                { model
+                | infoText = "It doesn't do anything."
+                , currentAction = Look
+                }
+
+        _ ->
+            { model
+            | infoText = "It doesn't do anything."
+            , currentAction = Look
+            }
+
 -- Items: Key Fob(Locks access to RC), Journal(Required to use the computer)
 -- Portal to the street
 apartment =
@@ -144,11 +174,17 @@ planks =
 
 lockedRCDoor =
     { kind = Replaceable
-        { replacedWith = lockedRCDoor
+        { replacedWith = portalIntoRC
         , requiredItem = Keyfob
         }
-    , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
+    , hitbox = { x = 1000, y = 0, width = 80, height = 1080 }
     , description = "A locked door."
+    }
+
+portalIntoRC =
+    { kind = Portal RCWorkshop
+    , hitbox = { x = 1020, y = 0, width = 60, height = 1080 }
+    , description = "An open Door."
     }
 
 -- Simple: RCEntrance (Replaced with a portal when used with key fob)
@@ -184,6 +220,7 @@ type Action
    = Look
    | Move
    | Take
+   | Use InventoryItem
 
 -- Update
 type Msg
@@ -212,12 +249,16 @@ update message model =
                             }
                         _ ->
                             { model | infoText = "You can't take that." }
+
                 Move ->
                     case entity.kind of
                         Portal location ->
                             changeLocation location model
                         _ ->
                             { model | infoText = "You can't walk there." }
+
+                Use item ->
+                    useItem item entity model
 
 -- View
 
@@ -230,7 +271,7 @@ renderActionButton currentAction a =
 
 renderInventoryItem : InventoryItem -> Html Msg
 renderInventoryItem item =
-    div [ class "inventoryitem" ] [ button [] [ text (toString item) ] ]
+    div [ class "inventoryitem" ] [ button [ onClick (ChangeAction (Use item)) ] [ text (toString item) ] ]
 
 
 view : Model -> Html Msg
@@ -241,6 +282,7 @@ view ({inventory, currentAction, infoText} as model) =
                 Move -> "s-resize"
                 Take -> "grab"
                 Look -> "zoom-in"
+                Use _ -> "grab"
         actionButtons = List.map (renderActionButton currentAction) [Look, Move, Take]
         inventoryItems =
             if List.isEmpty inventory then
