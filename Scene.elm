@@ -35,7 +35,7 @@ type alias Rect = {
 }
 
 type InventoryItem
-    = Journal
+    = Diary
     | Keyfob
     | Crowbar
 
@@ -120,7 +120,7 @@ useItem item entity ({inventory, currentLocation} as model) =
         _ ->
             doesntDoAnything
 
--- Items: Key Fob(Locks access to RC), Journal(Required to use the computer)
+-- Items: Key Fob(Locks access to RC), Diary(Required to use the computer)
 -- Portal to the street
 apartment =
     { location = Apartment
@@ -133,9 +133,9 @@ apartment =
             , imagePath = Nothing
             }
 
-            , { kind = Item Journal
+            , { kind = Item Diary
             , hitbox = { x = 641, y = 879, width = 187, height = 137 }
-            , description = "A Journal."
+            , description = "A Diary."
             , imagePath = Just "items/diary.png"
             }
 
@@ -228,7 +228,7 @@ computer =
 lockedComputer =
     { kind = Replaceable
         { replacedWith = computer
-        , requiredItem = Journal
+        , requiredItem = Diary
         }
     , hitbox = { x = 730, y = 568, width = 306, height = 312 }
     , description = "The computer is unlocked."
