@@ -53,7 +53,9 @@ type EntityKind
     | Item InventoryItem
     | Replaceable
         { replacedWith: Entity
-        , requiredItem: InventoryItem }
+        , requiredItem: InventoryItem
+        , message: String
+        }
 
 type alias Entity =
     { hitbox : Rect
@@ -131,13 +133,13 @@ useItem item entity ({inventory, currentLocation} as model) =
         }
     in
     case entity.kind of
-        Replaceable {replacedWith, requiredItem} ->
+        Replaceable {replacedWith, requiredItem, message} ->
             if item == requiredItem then
                 { model
                 | inventory = removeItem item model.inventory
                 , currentLocation = replaceEntity entity replacedWith currentLocation
                 , currentAction = Look
-                , infoText = "Well, looks like this did something."
+                , infoText = message
                 }
 
             else
@@ -155,7 +157,7 @@ apartment =
            She had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the omniscient omnipotent AI used on everyone's brain chips.
 
 
-           This is where the accident happened. They said in the newspaper that it happened during a rountine upgrade to Singularity's mainframe. You tried to know more, but people at Singularity aren't talking to anyone about it.
+           This is where the accident happened. They said in the newspaper that it happened during a routine upgrade to Singularity's mainframe. You tried to know more, but people at Singularity aren't talking to anyone about it.
         """
     , description = "Ada's apartment. There is so many books on AI and programming lying around!"
     , entities =
@@ -188,7 +190,7 @@ apartment =
 
             , { kind = Item Keyfob
             , hitbox = { x = 936, y = 630, width = 80, height = 30 }
-            , description = "A grey plastic device attached to a keyring."
+            , description = "A grey plastic device attached to a keyring. An address is written on it: 455 Broadway"
             , imagePath = Just "items/keyfob.png"
             }
         ]
@@ -197,6 +199,7 @@ apartment =
 lockedApartmentDoor =
     { kind = Replaceable
         { replacedWith = portalIntoApartment
+        , message = "You use Ada's keys to open the door leading to her apartment."
         , requiredItem = Keyset
         }
     , hitbox = { x = 21, y = 593, width = 68, height = 215 }
@@ -212,7 +215,7 @@ portalIntoApartment = portalTo Apartment
 apartmentStreet =
     { location = ApartmentStreet
     , imagePath = "apartment_street.jpg"
-    , initialDescription = Just "Back into the Street where Ada used to live."
+    , initialDescription = Just "Back into the street where Ada's apartment is."
     , description = "As the street ends there is a door into the building where Ada used to live. To your right the street continues."
     , entities =
         [ lockedApartmentDoor
@@ -226,6 +229,7 @@ apartmentStreet =
 planks =
     { kind = Replaceable
         { replacedWith = lockedRCDoor
+        , message = "It takes a significant amount of effort, but you are able to remove the planks and get access to the door using the crowbar."
         , requiredItem = Crowbar
         }
 
@@ -237,17 +241,18 @@ planks =
 lockedRCDoor =
     { kind = Replaceable
         { replacedWith = portalIntoRC
+        , message = "You use the keyfob from Ada's apartment to successfully unlock the door."
         , requiredItem = Keyfob
         }
     , hitbox = { x = 779, y = 735, width = 65, height = 185 }
-    , description = "A locked door."
+    , description = "The door is accessible, but it it is still locked."
     , imagePath = Nothing
     }
 
 portalIntoRC =
     portalTo RCWorkshop
         { hitbox = { x = 779, y = 735, width = 65, height = 185 }
-        , description = "An open Door."
+        , description = "The door is now open. You have a peek inside. There are stairs leading into some kind of abandoned workshop."
         }
 
 rcStreet =
@@ -286,6 +291,7 @@ lockedComputer =
     { kind = Replaceable
         { replacedWith = computer
         , requiredItem = Diary
+        , message = "You find the password for the computer in Ada's diary."
         }
     , hitbox = { x = 730, y = 568, width = 306, height = 312 }
     , description = "Access to the computer is locked."
@@ -296,7 +302,11 @@ lockedComputer =
 rcWorkshop =
     { location = RCWorkshop
     , imagePath = "rc_workshop.jpg"
-    , initialDescription = Just "TODO: Welcome to the workshop!"
+    , initialDescription = Just
+        """You enter the first floor of the building. The floor looks abandoned, with spare computer parts and electronic lying around
+
+           You adventure in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain chips and electronic parts, and very old books on artificial intelligence, some dating from the 20th century.
+        """
     , description = "A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional."
     , entities = [ lockedComputer
                  , portalTo RCStreet
