@@ -123,7 +123,7 @@ useItem item entity ({inventory, currentLocation} as model) =
 -- Portal to the street
 apartment =
     { location = Apartment
-    , imagePath = "img/apartment.jpg"
+    , imagePath = "apartment.jpg"
     , entities =
         [
             { kind = Portal ApartmentStreet
@@ -146,7 +146,7 @@ apartment =
 -- Portals: Apartment
 apartmentStreet =
     { location = ApartmentStreet
-    , imagePath = "img/apartment_street.jpg"
+    , imagePath = "apartment_street.jpg"
     , entities =
         [
             { kind = Portal Apartment
@@ -190,7 +190,7 @@ portalIntoRC =
 -- Simple: RCEntrance (Replaced with a portal when used with key fob)
 rcStreet =
     { location = RCStreet
-    , imagePath = "img/rc_street.jpg"
+    , imagePath = "rc_street.jpg"
     , entities =
         [
             { kind = Item Crowbar
@@ -210,7 +210,7 @@ rcStreet =
 -- Simple: Computer
 rcWorkshop =
     { location = RCWorkshop
-    , imagePath = "img/rc_workshop.jpg"
+    , imagePath = "rc_workshop.jpg"
     , entities =
         [
         ]
@@ -291,7 +291,7 @@ view ({inventory, currentAction, infoText} as model) =
                List.map renderInventoryItem inventory
         entityRects = List.map svgViewEntity model.currentLocation.entities
         sceneView =
-            g [] ([ image [ xlinkHref model.currentLocation.imagePath, x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
+            g [] ([ image [ xlinkHref ("img/scenes/" ++ model.currentLocation.imagePath), x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
         actionPane =
             div [ id "left" ]
                 [ div [ class "menutitle" ] [ text "Actions" ]
