@@ -223,7 +223,7 @@ rcStreet =
 computer =
     { kind = Simple
     , hitbox = { x = 730, y = 568, width = 306, height = 312 }
-    , description = "Access to the computer is locked."
+    , description = "The monitor displays a strange textual interface."
     , imagePath = Nothing
     }
 
@@ -233,7 +233,7 @@ lockedComputer =
         , requiredItem = Diary
         }
     , hitbox = { x = 730, y = 568, width = 306, height = 312 }
-    , description = "The computer is unlocked."
+    , description = "Access to the computer is locked."
     , imagePath = Just "items/lockscreen.png"
     }
 
