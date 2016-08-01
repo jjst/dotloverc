@@ -348,7 +348,7 @@ svgViewEntity ({hitbox, imagePath} as entity) =
             , y (toString hitbox.y)
             , height (toString hitbox.height)
             , width (toString hitbox.width)
-            , SA.class "entity debug"
+            , SA.class ([ "entity", (toString entity.kind) |> String.toLower, "debug" ] |> String.join " ")
             , onClick (ExecuteAction entity)
             ]
     in
