@@ -48,11 +48,12 @@ type EntityKind
         { replacedWith: Entity
         , requiredItem: InventoryItem }
 
-type alias Entity = {
-    hitbox : Rect,
-    description : String,
-    kind : EntityKind
-}
+type alias Entity =
+    { hitbox : Rect
+    , description : String
+    , imagePath : Maybe String
+    , kind : EntityKind
+    }
 
 type Location
     = Apartment
@@ -129,16 +130,19 @@ apartment =
             { kind = Portal ApartmentStreet
             , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
             , description = "A door that leads into the street."
+            , imagePath = Nothing
             }
 
             , { kind = Item Journal
             , hitbox = { x = 400, y = 800, width = 50, height = 50 }
             , description = "A Journal."
+            , imagePath = Nothing
             }
 
             , { kind = Item Keyfob
             , hitbox = { x = 500, y = 900, width = 50, height = 50 }
             , description = "A grey plastic device attached to a keyring."
+            , imagePath = Nothing
             }
         ]
     }
@@ -152,11 +156,13 @@ apartmentStreet =
             { kind = Portal Apartment
             , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
             , description = "The door into your apartment."
+            , imagePath = Nothing
             }
 
             , { kind = Portal RCStreet
             , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
             , description = "A street that leads away from your apartment."
+            , imagePath = Nothing
             }
         ]
     }
@@ -170,6 +176,7 @@ planks =
 
     , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
     , description = "Some loose planks covering a door."
+    , imagePath = Nothing
     }
 
 lockedRCDoor =
@@ -179,12 +186,14 @@ lockedRCDoor =
         }
     , hitbox = { x = 1000, y = 0, width = 80, height = 1080 }
     , description = "A locked door."
+    , imagePath = Nothing
     }
 
 portalIntoRC =
     { kind = Portal RCWorkshop
     , hitbox = { x = 1020, y = 0, width = 60, height = 1080 }
     , description = "An open Door."
+    , imagePath = Nothing
     }
 
 -- Simple: RCEntrance (Replaced with a portal when used with key fob)
@@ -196,6 +205,7 @@ rcStreet =
             { kind = Item Crowbar
             , hitbox = { x = 800, y = 880, width = 50, height = 100 }
             , description = "A well blacksmithed sturdy steel crowbar."
+            , imagePath = Nothing
             }
 
             , planks
@@ -203,6 +213,7 @@ rcStreet =
             , { kind = Portal ApartmentStreet
             , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
             , description = "A street that leads back towards your apartment."
+            , imagePath = Nothing
             }
         ]
     }
@@ -316,11 +327,19 @@ view ({inventory, currentAction, infoText} as model) =
 
 
 svgViewEntity : Entity -> Svg Msg
-svgViewEntity ({hitbox} as e) =
+svgViewEntity ({hitbox, imagePath} as entity) =
     let
-        x_ = toString hitbox.x
-        y_ = toString hitbox.y
-        w = toString hitbox.width
-        h = toString hitbox.height
+        attributes =
+            [ x (toString hitbox.x)
+            , y (toString hitbox.y)
+            , height (toString hitbox.height)
+            , width (toString hitbox.width)
+            , SA.class "entity debug"
+            , onClick (ExecuteAction entity)
+            ]
     in
-    rect [ x x_, y y_, height h, width w, SA.class "entity debug", onClick (ExecuteAction e) ] []
+       case imagePath of
+           Just path ->
+               image (xlinkHref ("img/" ++ path) :: attributes) []
+           Nothing ->
+               rect attributes []
