@@ -72,6 +72,7 @@ type alias LocationProperties =
     { imagePath : String
     , entities : List Entity
     , location : Location
+    , description : String
     }
 
 -- Entity should be constrained to kind == Item
@@ -132,6 +133,7 @@ useItem item entity ({inventory, currentLocation} as model) =
 apartment =
     { location = Apartment
     , imagePath = "apartment.jpg"
+    , description = "TODO: Apartment description"
     , entities =
         [
             portalTo ApartmentStreet
@@ -157,6 +159,7 @@ apartment =
 apartmentStreet =
     { location = ApartmentStreet
     , imagePath = "apartment_street.jpg"
+    , description = "As the street ends there is a door into the building where you live. To your right the street continues."
     , entities =
         [
             portalTo Apartment
@@ -202,6 +205,7 @@ portalIntoRC =
 rcStreet =
     { location = RCStreet
     , imagePath = "rc_street.jpg"
+    , description = "The building appears to have been under renovation, yet no one seems to have worked here in a long time."
     , entities =
         [
             { kind = Item Crowbar
@@ -240,6 +244,7 @@ lockedComputer =
 rcWorkshop =
     { location = RCWorkshop
     , imagePath = "rc_workshop.jpg"
+    , description = "A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional."
     , entities = [ lockedComputer
                  , portalTo RCStreet
                      { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
@@ -258,6 +263,7 @@ type Action
 type Msg
     = ChangeAction Action
     | ExecuteAction Entity
+    | LocationAction
 
 
 update : Msg -> Model -> Model
@@ -291,6 +297,11 @@ update message model =
 
                 Use item ->
                     useItem item entity model
+
+        LocationAction -> case model.currentAction of
+            Look -> { model | infoText = model.currentLocation.description }
+            Move -> { model | infoText = "You are already here." }
+            _ -> model
 
 -- View
 
@@ -329,9 +340,15 @@ view ({inventory, currentAction, infoText} as model) =
                 [ div [ class "inventoryempty" ] [ text "(empty)" ] ]
             else
                 inventory |> List.map (renderInventoryItem currentAction)
+
+        -- TODO: Factor size of backgrounds and viewBox into a shared constant
+        sceneBackgroundSize = [ x "0", y "0", height "1080", width "1080" ]
+        sceneBackground = image
+            ([ xlinkHref ("img/scenes/" ++ model.currentLocation.imagePath), onClick LocationAction ] ++ sceneBackgroundSize) []
         entityRects = List.map svgViewEntity model.currentLocation.entities
         sceneView =
-            g [] ([ image [ xlinkHref ("img/scenes/" ++ model.currentLocation.imagePath), x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
+            g [] (sceneBackground :: entityRects)
+
         actionPane =
             div [ id "left" ]
                 [ div [ class "menutitle" ] [ text "Actions" ]
