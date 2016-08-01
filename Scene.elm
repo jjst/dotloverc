@@ -175,7 +175,6 @@ apartmentStreet =
 planks =
     { kind = Replaceable
         { replacedWith = lockedRCDoor
-        -- Declare these as types
         , requiredItem = Crowbar
         }
 
