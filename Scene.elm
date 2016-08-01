@@ -284,16 +284,19 @@ renderInventoryItem : InventoryItem -> Html Msg
 renderInventoryItem item =
     div [ class "inventoryitem" ] [ button [ onClick (ChangeAction (Use item)) ] [ text (toString item) ] ]
 
+cursorStyle : Action -> String
+cursorStyle action =
+    case action of
+        Move -> "s-resize"
+        Take -> "grab"
+        Look -> "zoom-in"
+        Use _ -> "grab"
 
 view : Model -> Html Msg
 view ({inventory, currentAction, infoText} as model) =
     let
-        cursor =
-            case currentAction of
-                Move -> "s-resize"
-                Take -> "grab"
-                Look -> "zoom-in"
-                Use _ -> "grab"
+        cursor = cursorStyle currentAction
+
         actionButtons = List.map (renderActionButton currentAction) [Look, Move, Take]
         inventoryItems =
             if List.isEmpty inventory then
@@ -310,7 +313,7 @@ view ({inventory, currentAction, infoText} as model) =
                 , div [ class "infotext" ] [ text infoText ]
                 ]
         mainPane =
-            div [ id "middle", HA.style [("cursor", cursor)] ]
+            div [ id "middle", HA.style [ ("cursor", cursor) ] ]
                 [ svg [ viewBox "0 0 1080 1080" ] [ sceneView ] ]
         inventoryPane =
             div [ id "right" ]
