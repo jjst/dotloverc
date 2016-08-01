@@ -195,7 +195,7 @@ lockedRCDoor =
 
 portalIntoRC =
     portalTo RCWorkshop
-        { hitbox = { x = 1020, y = 0, width = 60, height = 1080 }
+        { hitbox = { x = 779, y = 735, width = 65, height = 185 }
         , description = "An open Door."
         }
 
