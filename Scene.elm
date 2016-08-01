@@ -42,7 +42,6 @@ type InventoryItem
 type EntityKind
     = Simple
     | Portal Location
-    -- Should be InventoryItem
     | Item InventoryItem
     | Replaceable
         { replacedWith: Entity
