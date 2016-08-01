@@ -72,6 +72,8 @@ type alias LocationProperties =
     { imagePath : String
     , entities : List Entity
     , location : Location
+    -- Maybe this could be combined and modeled together with the description
+    , initialDescription : Maybe String
     , description : String
     }
 
@@ -92,9 +94,15 @@ changeLocation : Location -> Model -> Model
 changeLocation location ({currentLocation, otherLocations} as model) =
     case otherLocations |> List.filter (\e -> e.location == location) |> List.head of
         Just nextLocation ->
+            let
+                description = case nextLocation.initialDescription of
+                    Just desc -> desc
+                    Nothing -> ""
+            in
             { model
-                | currentLocation = nextLocation
+                | currentLocation = { nextLocation | initialDescription = Nothing }
                 , otherLocations = (currentLocation :: otherLocations) |> List.filter (\e -> e.location /= location)
+                , infoText = description
             }
         Nothing -> { model | infoText = "Developer Error: portal to unknown location => " ++ (toString location) }
 
@@ -131,6 +139,7 @@ useItem item entity ({inventory, currentLocation} as model) =
 apartment =
     { location = Apartment
     , imagePath = "apartment.jpg"
+    , initialDescription = Just "TODO: First time you walk into the apartment"
     , description = "TODO: Apartment description"
     , entities =
         [
@@ -156,6 +165,7 @@ apartment =
 apartmentStreet =
     { location = ApartmentStreet
     , imagePath = "apartment_street.jpg"
+    , initialDescription = Just "TODO: Welcome to the street"
     , description = "As the street ends there is a door into the building where you live. To your right the street continues."
     , entities =
         [
@@ -201,6 +211,7 @@ portalIntoRC =
 rcStreet =
     { location = RCStreet
     , imagePath = "rc_street.jpg"
+    , initialDescription = Just "TODO: Things are in shambles"
     , description = "The building appears to have been under renovation, yet no one seems to have worked here in a long time."
     , entities =
         [
@@ -240,6 +251,7 @@ lockedComputer =
 rcWorkshop =
     { location = RCWorkshop
     , imagePath = "rc_workshop.jpg"
+    , initialDescription = Just "TODO: Welcome to the workshop!"
     , description = "A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional."
     , entities = [ lockedComputer
                  , portalTo RCStreet
