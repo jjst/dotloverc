@@ -12,8 +12,8 @@ import Svg.Attributes exposing (..)
 
 init = {
    currentAction = Look
-   , currentLocation = apartment
-   , otherLocations = [apartmentStreet, rcStreet, rcWorkshop]
+   , currentLocation = apartmentStreet
+   , otherLocations = [apartment, rcStreet, rcWorkshop]
    , infoText = "You wake up all alone, and all your friends are dead. Welcome to the game!"
    , inventory = []
    }
@@ -35,24 +35,32 @@ type alias Rect = {
 }
 
 type InventoryItem
-    = Journal
+    = Diary
     | Keyfob
     | Crowbar
 
 type EntityKind
     = Simple
     | Portal Location
-    -- Should be InventoryItem
     | Item InventoryItem
     | Replaceable
         { replacedWith: Entity
         , requiredItem: InventoryItem }
 
-type alias Entity = {
-    hitbox : Rect,
-    description : String,
-    kind : EntityKind
-}
+type alias Entity =
+    { hitbox : Rect
+    , description : String
+    , imagePath : Maybe String
+    , kind : EntityKind
+    }
+
+portalTo : Location -> { description: String, hitbox: Rect } -> Entity
+portalTo location entity =
+    { kind = Portal location
+    , description = entity.description
+    , hitbox = entity.hitbox
+    , imagePath = Nothing
+    }
 
 type Location
     = Apartment
@@ -64,6 +72,9 @@ type alias LocationProperties =
     { imagePath : String
     , entities : List Entity
     , location : Location
+    -- Maybe this could be combined and modeled together with the description
+    , initialDescription : Maybe String
+    , description : String
     }
 
 -- Entity should be constrained to kind == Item
@@ -83,9 +94,15 @@ changeLocation : Location -> Model -> Model
 changeLocation location ({currentLocation, otherLocations} as model) =
     case otherLocations |> List.filter (\e -> e.location == location) |> List.head of
         Just nextLocation ->
+            let
+                description = case nextLocation.initialDescription of
+                    Just desc -> desc
+                    Nothing -> ""
+            in
             { model
-                | currentLocation = nextLocation
+                | currentLocation = { nextLocation | initialDescription = Nothing }
                 , otherLocations = (currentLocation :: otherLocations) |> List.filter (\e -> e.location /= location)
+                , infoText = description
             }
         Nothing -> { model | infoText = "Developer Error: portal to unknown location => " ++ (toString location) }
 
@@ -98,6 +115,13 @@ removeItem item list = list |> List.filter (\i -> i /= item)
 
 useItem : InventoryItem -> Entity -> Model -> Model
 useItem item entity ({inventory, currentLocation} as model) =
+    let
+        doesntDoAnything =
+            { model
+            | infoText = "It doesn't do anything."
+            , currentAction = Look
+        }
+    in
     case entity.kind of
         Replaceable {replacedWith, requiredItem} ->
             if item == requiredItem then
@@ -108,68 +132,64 @@ useItem item entity ({inventory, currentLocation} as model) =
                 }
 
             else
-                { model
-                | infoText = "It doesn't do anything."
-                , currentAction = Look
-                }
-
+                doesntDoAnything
         _ ->
-            { model
-            | infoText = "It doesn't do anything."
-            , currentAction = Look
-            }
+            doesntDoAnything
 
--- Items: Key Fob(Locks access to RC), Journal(Required to use the computer)
--- Portal to the street
 apartment =
     { location = Apartment
-    , imagePath = "img/apartment.jpg"
+    , imagePath = "apartment.jpg"
+    , initialDescription = Just "TODO: First time you walk into the apartment"
+    , description = "TODO: Apartment description"
     , entities =
         [
-            { kind = Portal ApartmentStreet
-            , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
-            , description = "A door that leads into the street."
-            }
+            portalTo ApartmentStreet
+                { hitbox = { x = 245, y = 0, width = 225, height = 475 }
+                , description = "A door that leads into the street."
+                }
 
-            , { kind = Item Journal
-            , hitbox = { x = 400, y = 800, width = 50, height = 50 }
-            , description = "A Journal."
+            , { kind = Item Diary
+            , hitbox = { x = 641, y = 879, width = 187, height = 137 }
+            , description = "A Diary."
+            , imagePath = Just "items/diary.png"
             }
 
             , { kind = Item Keyfob
-            , hitbox = { x = 500, y = 900, width = 50, height = 50 }
+            , hitbox = { x = 936, y = 630, width = 80, height = 30 }
             , description = "A grey plastic device attached to a keyring."
+            , imagePath = Just "items/keyfob.png"
             }
         ]
     }
 
--- Portals: Apartment
 apartmentStreet =
     { location = ApartmentStreet
-    , imagePath = "img/apartment_street.jpg"
+    , imagePath = "apartment_street.jpg"
+    , initialDescription = Just "TODO: Welcome to the street"
+    , description = "As the street ends there is a door into the building where you live. To your right the street continues."
     , entities =
         [
-            { kind = Portal Apartment
-            , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
-            , description = "The door into your apartment."
-            }
+            portalTo Apartment
+                { hitbox = { x = 21, y = 593, width = 68, height = 215 }
+                , description = "The door into your apartment."
+                }
 
-            , { kind = Portal RCStreet
-            , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
-            , description = "A street that leads away from your apartment."
-            }
+            , portalTo RCStreet
+                { hitbox = { x = 685, y = 0, width = 395, height = 735 }
+                , description = "A street that leads away from your apartment."
+                }
         ]
     }
 
 planks =
     { kind = Replaceable
         { replacedWith = lockedRCDoor
-        -- Declare these as types
         , requiredItem = Crowbar
         }
 
-    , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
+    , hitbox = { x = 760, y = 734, width = 111, height = 196 }
     , description = "Some loose planks covering a door."
+    , imagePath = Just "items/more_planks.png"
     }
 
 lockedRCDoor =
@@ -177,43 +197,68 @@ lockedRCDoor =
         { replacedWith = portalIntoRC
         , requiredItem = Keyfob
         }
-    , hitbox = { x = 1000, y = 0, width = 80, height = 1080 }
+    , hitbox = { x = 779, y = 735, width = 65, height = 185 }
     , description = "A locked door."
+    , imagePath = Nothing
     }
 
 portalIntoRC =
-    { kind = Portal RCWorkshop
-    , hitbox = { x = 1020, y = 0, width = 60, height = 1080 }
-    , description = "An open Door."
-    }
+    portalTo RCWorkshop
+        { hitbox = { x = 779, y = 735, width = 65, height = 185 }
+        , description = "An open Door."
+        }
 
--- Simple: RCEntrance (Replaced with a portal when used with key fob)
 rcStreet =
     { location = RCStreet
-    , imagePath = "img/rc_street.jpg"
+    , imagePath = "rc_street.jpg"
+    , initialDescription = Just "TODO: Things are in shambles"
+    , description = "The building appears to have been under renovation, yet no one seems to have worked here in a long time."
     , entities =
         [
             { kind = Item Crowbar
-            , hitbox = { x = 800, y = 880, width = 50, height = 100 }
+            , hitbox = { x = 636, y = 1080-79-32, width = 66, height = 32 }
             , description = "A well blacksmithed sturdy steel crowbar."
+            , imagePath = Just "items/crowbar.png"
             }
 
             , planks
 
-            , { kind = Portal ApartmentStreet
-            , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
-            , description = "A street that leads back towards your apartment."
-            }
+            , portalTo ApartmentStreet
+                { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+                , description = "A street that leads back towards your apartment."
+                }
         ]
+    }
+
+computer =
+    { kind = Simple
+    , hitbox = { x = 730, y = 568, width = 306, height = 312 }
+    , description = "The monitor displays a strange textual interface."
+    , imagePath = Nothing
+    }
+
+lockedComputer =
+    { kind = Replaceable
+        { replacedWith = computer
+        , requiredItem = Diary
+        }
+    , hitbox = { x = 730, y = 568, width = 306, height = 312 }
+    , description = "Access to the computer is locked."
+    , imagePath = Just "items/lockscreen.png"
     }
 
 -- Simple: Computer
 rcWorkshop =
     { location = RCWorkshop
-    , imagePath = "img/rc_workshop.jpg"
-    , entities =
-        [
-        ]
+    , imagePath = "rc_workshop.jpg"
+    , initialDescription = Just "TODO: Welcome to the workshop!"
+    , description = "A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional."
+    , entities = [ lockedComputer
+                 , portalTo RCStreet
+                     { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+                     , description = "A path through the building leading back to the street."
+                     }
+                 ]
     }
 
 type Action
@@ -226,6 +271,7 @@ type Action
 type Msg
     = ChangeAction Action
     | ExecuteAction Entity
+    | LocationAction
 
 
 update : Msg -> Model -> Model
@@ -260,6 +306,11 @@ update message model =
                 Use item ->
                     useItem item entity model
 
+        LocationAction -> case model.currentAction of
+            Look -> { model | infoText = model.currentLocation.description }
+            Move -> { model | infoText = "You are already here." }
+            _ -> model
+
 -- View
 
 renderActionButton : Action -> Action -> Html Msg
@@ -269,29 +320,43 @@ renderActionButton currentAction a =
     in
         button [ onClick (ChangeAction a), classes ] [ text (toString a) ]
 
-renderInventoryItem : InventoryItem -> Html Msg
-renderInventoryItem item =
-    div [ class "inventoryitem" ] [ button [ onClick (ChangeAction (Use item)) ] [ text (toString item) ] ]
+renderInventoryItem : Action -> InventoryItem -> Html Msg
+renderInventoryItem action item =
+    let
+        itemButton = button [ onClick (ChangeAction (Use item)) ] [ text (toString item) ]
+        cssClasses = "inventoryitem" ::
+            case action of
+                Use selectedItem -> (if item == selectedItem then ["selected"] else [])
+                _ -> []
+    in
+    div [ class (cssClasses |> String.join " ") ] [ itemButton ]
+
+-- Returns a CSS class that represents the current action
+actionClass : Action -> String
+actionClass action =
+    "action-" ++ case action of
+        Use _ -> "use"
+        _ -> toString action |> String.toLower
 
 
 view : Model -> Html Msg
 view ({inventory, currentAction, infoText} as model) =
     let
-        cursor =
-            case currentAction of
-                Move -> "s-resize"
-                Take -> "grab"
-                Look -> "zoom-in"
-                Use _ -> "grab"
         actionButtons = List.map (renderActionButton currentAction) [Look, Move, Take]
         inventoryItems =
             if List.isEmpty inventory then
-               [ div [ class "inventoryempty" ] [ text "(empty)" ] ]
+                [ div [ class "inventoryempty" ] [ text "(empty)" ] ]
             else
-               List.map renderInventoryItem inventory
+                inventory |> List.map (renderInventoryItem currentAction)
+
+        -- TODO: Factor size of backgrounds and viewBox into a shared constant
+        sceneBackgroundSize = [ x "0", y "0", height "1080", width "1080" ]
+        sceneBackground = image
+            ([ xlinkHref ("img/scenes/" ++ model.currentLocation.imagePath), onClick LocationAction ] ++ sceneBackgroundSize) []
         entityRects = List.map svgViewEntity model.currentLocation.entities
         sceneView =
-            g [] ([ image [ xlinkHref model.currentLocation.imagePath, x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)
+            g [] (sceneBackground :: entityRects)
+
         actionPane =
             div [ id "left" ]
                 [ div [ class "menutitle" ] [ text "Actions" ]
@@ -299,7 +364,7 @@ view ({inventory, currentAction, infoText} as model) =
                 , div [ class "infotext" ] [ text infoText ]
                 ]
         mainPane =
-            div [ id "middle", HA.style [("cursor", cursor)] ]
+            div [ id "middle", HA.class (actionClass currentAction) ]
                 [ svg [ viewBox "0 0 1080 1080" ] [ sceneView ] ]
         inventoryPane =
             div [ id "right" ]
@@ -308,19 +373,22 @@ view ({inventory, currentAction, infoText} as model) =
                 ]
     in
        div [ HA.id "container" ] [ actionPane, mainPane, inventoryPane ]
-   {--
-        div [  ] [ svg [viewBox "0 0 800 600", width "800px"] [(svgView model)]
-               , div [] [ text ("Inventory: " ++ (if List.isEmpty inventory then "(empty)" else (String.join " ⚫ " inventory))) ]
-               ]
-               --}
 
 
 svgViewEntity : Entity -> Svg Msg
-svgViewEntity ({hitbox} as e) =
+svgViewEntity ({hitbox, imagePath} as entity) =
     let
-        x_ = toString hitbox.x
-        y_ = toString hitbox.y
-        w = toString hitbox.width
-        h = toString hitbox.height
+        attributes =
+            [ x (toString hitbox.x)
+            , y (toString hitbox.y)
+            , height (toString hitbox.height)
+            , width (toString hitbox.width)
+            , SA.class ([ "entity", (toString entity.kind) |> String.toLower, "debug" ] |> String.join " ")
+            , onClick (ExecuteAction entity)
+            ]
     in
-    rect [ x x_, y y_, height h, width w, SA.class "entity debug", onClick (ExecuteAction e) ] []
+       case imagePath of
+           Just path ->
+               image (xlinkHref ("img/" ++ path) :: attributes) []
+           Nothing ->
+               rect attributes []
