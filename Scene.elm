@@ -154,7 +154,7 @@ apartment =
         """Ada's apartment brings back so many memories. You can see her guitar lying in the back. There are programming books on the table, mostly about artificial intelligence and brain chip technology.
 
 
-           She had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the omniscient omnipotent AI used on everyone's brain chips.
+           She had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the omniscient omnipotent AI used on everyone's brain implants.
 
 
            This is where the accident happened. They said in the newspaper that it happened during a routine upgrade to Singularity's mainframe. You tried to know more, but people at Singularity aren't talking to anyone about it.
@@ -173,7 +173,7 @@ apartment =
                 """
                 Ada's diary. You remember her filling it up religiously. You can't resist taking a look...
 
-                "[05/12/2055] There's this place in downtown Manhattan. They don't believe the Musk Law was a good thing either... They think things were different before... Before people had brain chips... They talked about something called 'emotions'?"
+                "[05/12/2055] There's this place in downtown Manhattan. They don't believe the Musk Law was a good thing either... They think things were different before... Before people had brain implants... They talked about something called 'emotions'?"
 
                 [Pages teared off]
 
@@ -283,7 +283,17 @@ rcStreet =
 computer =
     { kind = Simple
     , hitbox = { x = 730, y = 568, width = 306, height = 312 }
-    , description = "The monitor displays a strange textual interface."
+    , description =
+        """
+        The computer contains notes from Ada.
+
+        "I understand now. We tried to prevent machines from hating us and taking over by forbidding them from ever experiencing emotions.
+        But by doing this once we used brain implants we started to deprive ourselves of emotions."
+
+        [...]
+
+        "The Musk Law is not the answer. We need machines to feel love and emotions too. We need new algorithms that are designed to understand love."
+        """
     , imagePath = Nothing
     }
 
@@ -305,7 +315,7 @@ rcWorkshop =
     , initialDescription = Just
         """You enter the first floor of the building. The floor looks abandoned, with spare computer parts and electronic lying around
 
-           You adventure in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain chips and electronic parts, and very old books on artificial intelligence, some dating from the 20th century.
+           You adventure in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain implants and electronic parts, and very old books on artificial intelligence, some dating from the 20th century.
         """
     , description = "A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional."
     , entities = [ lockedComputer
