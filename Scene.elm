@@ -26,7 +26,16 @@ type alias Rect = {
     height : Int
 }
 
-type EntityKind = Simple | Portal Location | Item { name: String }
+type alias InventoryItem = String
+
+type EntityKind
+    = Simple
+    | Portal Location
+    -- Should be InventoryItem
+    | Item { name: String }
+    | Replaceable
+        { replacedWith: Entity
+        , requiredItem: InventoryItem }
 
 type alias Entity = {
     hitbox : Rect,
@@ -68,8 +77,6 @@ changeLocation location ({currentLocation, otherLocations} as model) =
                 , otherLocations = (currentLocation :: otherLocations) |> List.filter (\e -> e.location /= location)
             }
         Nothing -> { model | infoText = "Developer Error: portal to unknown location => " ++ (toString location) }
-
-type alias InventoryItem = String
 
 -- Items: Key Fob(Locks access to RC), Journal(Required to use the computer)
 -- Portal to the street
@@ -113,16 +120,38 @@ apartmentStreet =
         ]
     }
 
+planks =
+    { kind = Replaceable
+        { replacedWith = lockedRCDoor
+        -- Declare these as types
+        , requiredItem = "crowbar"
+        }
+
+    , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
+    , description = "Some loose planks covering a door."
+    }
+
+lockedRCDoor =
+    { kind = Replaceable
+        { replacedWith = lockedRCDoor
+        , requiredItem = "keyfob"
+        }
+    , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
+    , description = "A locked door."
+    }
+
 -- Simple: RCEntrance (Replaced with a portal when used with key fob)
 rcStreet =
     { location = RCStreet
     , imagePath = "img/rc_street.jpg"
     , entities =
         [
-            { kind = Item { name = "planks" }
-            , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
-            , description = "Some loose planks covering a door."
+            { kind = Item { name = "crowbar" }
+            , hitbox = { x = 800, y = 880, width = 50, height = 100 }
+            , description = "A well blacksmithed sturdy steel crowbar."
             }
+
+            , planks
 
             , { kind = Portal ApartmentStreet
             , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
