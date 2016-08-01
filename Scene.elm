@@ -161,7 +161,7 @@ apartmentStreet =
     , entities =
         [
             portalTo Apartment
-                { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+                { hitbox = { x = 21, y = 593, width = 68, height = 215 }
                 , description = "The door into your apartment."
                 }
 
