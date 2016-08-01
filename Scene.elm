@@ -128,7 +128,7 @@ apartment =
     , entities =
         [
             { kind = Portal ApartmentStreet
-            , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+            , hitbox = { x = 245, y = 0, width = 225, height = 475 }
             , description = "A door that leads into the street."
             , imagePath = Nothing
             }
