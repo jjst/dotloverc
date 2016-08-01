@@ -338,11 +338,6 @@ view ({inventory, currentAction, infoText} as model) =
                 ]
     in
        div [ HA.id "container" ] [ actionPane, mainPane, inventoryPane ]
-   {--
-        div [  ] [ svg [viewBox "0 0 800 600", width "800px"] [(svgView model)]
-               , div [] [ text ("Inventory: " ++ (if List.isEmpty inventory then "(empty)" else (String.join " ⚫ " inventory))) ]
-               ]
-               --}
 
 
 svgViewEntity : Entity -> Svg Msg
