@@ -108,6 +108,24 @@ div#middle {
     height:100vh;
 }
 
+div#middle.action-move {
+    cursor: s-resize;
+}
+
+div#middle.action-take {
+    cursor: grab;
+    cursor: -webkit-grab;
+}
+
+div#middle.action-look {
+    cursor: zoom-in;
+}
+
+div#middle.action-use {
+    cursor: grab;
+    cursor: -webkit-grab;
+}
+
 div#middle > svg {
     width: 100%;
 }
