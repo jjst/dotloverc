@@ -218,13 +218,29 @@ rcStreet =
         ]
     }
 
+computer =
+    { kind = Simple
+    , hitbox = { x = 730, y = 568, width = 306, height = 312 }
+    , description = "Access to the computer is locked."
+    , imagePath = Nothing
+    }
+
+lockedComputer =
+    { kind = Replaceable
+        { replacedWith = computer
+        , requiredItem = Journal
+        }
+    , hitbox = { x = 730, y = 568, width = 306, height = 312 }
+    , description = "The computer is unlocked."
+    , imagePath = Just "items/lockscreen.png"
+    }
+
 -- Simple: Computer
 rcWorkshop =
     { location = RCWorkshop
     , imagePath = "rc_workshop.jpg"
     , entities =
-        [
-        ]
+        [ lockedComputer ]
     }
 
 type Action
