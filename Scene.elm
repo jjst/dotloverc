@@ -107,7 +107,7 @@ changeLocation location ({currentLocation, otherLocations} as model) =
             let
                 description = case nextLocation.initialDescription of
                     Just desc -> desc
-                    Nothing -> ""
+                    Nothing -> nextLocation.description
             in
             { model
                 | currentLocation = { nextLocation | initialDescription = Nothing }
