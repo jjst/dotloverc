@@ -296,9 +296,16 @@ renderActionButton currentAction a =
     in
         button [ onClick (ChangeAction a), classes ] [ text (toString a) ]
 
-renderInventoryItem : InventoryItem -> Html Msg
-renderInventoryItem item =
-    div [ class "inventoryitem" ] [ button [ onClick (ChangeAction (Use item)) ] [ text (toString item) ] ]
+renderInventoryItem : Action -> InventoryItem -> Html Msg
+renderInventoryItem action item =
+    let
+        itemButton = button [ onClick (ChangeAction (Use item)) ] [ text (toString item) ]
+        cssClasses = "inventoryitem" ::
+            case action of
+                Use selectedItem -> (if item == selectedItem then ["selected"] else [])
+                _ -> []
+    in
+    div [ class (cssClasses |> String.join " ") ] [ itemButton ]
 
 cursorStyle : Action -> String
 cursorStyle action =
@@ -316,9 +323,9 @@ view ({inventory, currentAction, infoText} as model) =
         actionButtons = List.map (renderActionButton currentAction) [Look, Move, Take]
         inventoryItems =
             if List.isEmpty inventory then
-               [ div [ class "inventoryempty" ] [ text "(empty)" ] ]
+                [ div [ class "inventoryempty" ] [ text "(empty)" ] ]
             else
-               List.map renderInventoryItem inventory
+                inventory |> List.map (renderInventoryItem currentAction)
         entityRects = List.map svgViewEntity model.currentLocation.entities
         sceneView =
             g [] ([ image [ xlinkHref ("img/scenes/" ++ model.currentLocation.imagePath), x "0", y "0", height "1080", width "1080" ] [] ] ++ entityRects)

@@ -53,9 +53,13 @@ div#actionbuttons {
     color: #EEEEEE;
 }
 
-.inventoryitem  > button {
+.inventoryitem > button {
     width: 200px;
     margin: 10px;
+}
+
+.inventoryitem.selected > button {
+    background-color: #CBE8AB;
 }
 
 .inventoryempty {
