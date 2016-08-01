@@ -99,6 +99,13 @@ removeItem item list = list |> List.filter (\i -> i /= item)
 
 useItem : InventoryItem -> Entity -> Model -> Model
 useItem item entity ({inventory, currentLocation} as model) =
+    let
+        doesntDoAnything =
+            { model
+            | infoText = "It doesn't do anything."
+            , currentAction = Look
+        }
+    in
     case entity.kind of
         Replaceable {replacedWith, requiredItem} ->
             if item == requiredItem then
@@ -109,16 +116,9 @@ useItem item entity ({inventory, currentLocation} as model) =
                 }
 
             else
-                { model
-                | infoText = "It doesn't do anything."
-                , currentAction = Look
-                }
-
+                doesntDoAnything
         _ ->
-            { model
-            | infoText = "It doesn't do anything."
-            , currentAction = Look
-            }
+            doesntDoAnything
 
 -- Items: Key Fob(Locks access to RC), Journal(Required to use the computer)
 -- Portal to the street
