@@ -178,9 +178,9 @@ planks =
         , requiredItem = Crowbar
         }
 
-    , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
+    , hitbox = { x = 760, y = 734, width = 111, height = 196 }
     , description = "Some loose planks covering a door."
-    , imagePath = Nothing
+    , imagePath = Just "items/more_planks.png"
     }
 
 lockedRCDoor =
@@ -188,7 +188,7 @@ lockedRCDoor =
         { replacedWith = portalIntoRC
         , requiredItem = Keyfob
         }
-    , hitbox = { x = 1000, y = 0, width = 80, height = 1080 }
+    , hitbox = { x = 779, y = 735, width = 65, height = 185 }
     , description = "A locked door."
     , imagePath = Nothing
     }
