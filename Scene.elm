@@ -10,6 +10,14 @@ import Svg exposing (..)
 import Svg.Attributes as SA
 import Svg.Attributes exposing (..)
 
+init = {
+   currentAction = Look
+   , currentLocation = apartment
+   , otherLocations = [apartmentStreet, rcStreet, rcWorkshop]
+   , infoText = "You wake up all alone, and all your friends are dead. Welcome to the game!"
+   , inventory = []
+   }
+
 main =
     App.beginnerProgram
         { model = init
@@ -26,13 +34,16 @@ type alias Rect = {
     height : Int
 }
 
-type alias InventoryItem = String
+type InventoryItem
+    = Journal
+    | Keyfob
+    | Crowbar
 
 type EntityKind
     = Simple
     | Portal Location
     -- Should be InventoryItem
-    | Item { name: String }
+    | Item InventoryItem
     | Replaceable
         { replacedWith: Entity
         , requiredItem: InventoryItem }
@@ -90,12 +101,12 @@ apartment =
             , description = "A door that leads into the street."
             }
 
-            , { kind = Item { name = "journal" }
+            , { kind = Item Journal
             , hitbox = { x = 400, y = 800, width = 50, height = 50 }
             , description = "A Journal."
             }
 
-            , { kind = Item { name = "keyfob" }
+            , { kind = Item Keyfob
             , hitbox = { x = 500, y = 900, width = 50, height = 50 }
             , description = "A grey plastic device attached to a keyring."
             }
@@ -124,7 +135,7 @@ planks =
     { kind = Replaceable
         { replacedWith = lockedRCDoor
         -- Declare these as types
-        , requiredItem = "crowbar"
+        , requiredItem = Crowbar
         }
 
     , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
@@ -134,7 +145,7 @@ planks =
 lockedRCDoor =
     { kind = Replaceable
         { replacedWith = lockedRCDoor
-        , requiredItem = "keyfob"
+        , requiredItem = Keyfob
         }
     , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
     , description = "A locked door."
@@ -146,7 +157,7 @@ rcStreet =
     , imagePath = "img/rc_street.jpg"
     , entities =
         [
-            { kind = Item { name = "crowbar" }
+            { kind = Item Crowbar
             , hitbox = { x = 800, y = 880, width = 50, height = 100 }
             , description = "A well blacksmithed sturdy steel crowbar."
             }
@@ -169,22 +180,10 @@ rcWorkshop =
         ]
     }
 
-
-init = {
-   currentAction = Look
-   , currentLocation = apartment
-   , otherLocations = [apartmentStreet, rcStreet, rcWorkshop]
-   , infoText = "You wake up all alone, and all your friends are dead. Welcome to the game!"
-   , inventory = [ "A banana", "5 dollars" ]
-   }
-
 type Action
    = Look
    | Move
    | Take
-
---init : Model
---init = On
 
 -- Update
 type Msg
@@ -205,11 +204,11 @@ update message model =
 
                 Take ->
                     case entity.kind of
-                        Item { name } ->
+                        Item item ->
                             { model
-                                | inventory = (name :: model.inventory)
+                                | inventory = (item :: model.inventory)
                                 , currentLocation = takeItemFromLocation entity model.currentLocation
-                                , infoText = ("You have acquired " ++ name ++ "!")
+                                , infoText = ("You have acquired " ++ (toString item) ++ "!")
                             }
                         _ ->
                             { model | infoText = "You can't take that." }
@@ -231,7 +230,7 @@ renderActionButton currentAction a =
 
 renderInventoryItem : InventoryItem -> Html Msg
 renderInventoryItem item =
-    div [ class "inventoryitem" ] [ button [] [ text item ] ]
+    div [ class "inventoryitem" ] [ button [] [ text (toString item) ] ]
 
 
 view : Model -> Html Msg
