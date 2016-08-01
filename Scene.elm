@@ -165,7 +165,7 @@ apartmentStreet =
                 }
 
             , portalTo RCStreet
-                { hitbox = { x = 980, y = 0, width = 100, height = 1080 }
+                { hitbox = { x = 685, y = 0, width = 395, height = 735 }
                 , description = "A street that leads away from your apartment."
                 }
         ]
