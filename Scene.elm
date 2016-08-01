@@ -12,8 +12,8 @@ import Svg.Attributes exposing (..)
 
 init = {
    currentAction = Look
-   , currentLocation = apartment
-   , otherLocations = [apartmentStreet, rcStreet, rcWorkshop]
+   , currentLocation = apartmentStreet
+   , otherLocations = [apartment, rcStreet, rcWorkshop]
    , infoText = "You wake up all alone, and all your friends are dead. Welcome to the game!"
    , inventory = []
    }
