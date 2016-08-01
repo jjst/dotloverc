@@ -128,8 +128,6 @@ useItem item entity ({inventory, currentLocation} as model) =
         _ ->
             doesntDoAnything
 
--- Items: Key Fob(Locks access to RC), Diary(Required to use the computer)
--- Portal to the street
 apartment =
     { location = Apartment
     , imagePath = "apartment.jpg"
@@ -155,7 +153,6 @@ apartment =
         ]
     }
 
--- Portals: Apartment
 apartmentStreet =
     { location = ApartmentStreet
     , imagePath = "apartment_street.jpg"
@@ -201,7 +198,6 @@ portalIntoRC =
         , description = "An open Door."
         }
 
--- Simple: RCEntrance (Replaced with a portal when used with key fob)
 rcStreet =
     { location = RCStreet
     , imagePath = "rc_street.jpg"
