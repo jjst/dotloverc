@@ -68,6 +68,10 @@ rect.entity {
     fill-opacity: 0;
 }
 
+image.entity:hover {
+    opacity: 0.5;
+}
+
 rect.debug {
     stroke: blue;
 }
