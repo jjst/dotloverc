@@ -14,8 +14,15 @@ init = {
    currentAction = Look
    , currentLocation = apartmentStreet
    , otherLocations = [apartment, rcStreet, rcWorkshop]
-   , infoText = "You wake up all alone, and all your friends are dead. Welcome to the game!"
-   , inventory = []
+   , infoText =
+       """
+       That's it. Ada's place in East Harlem. You still can't believe she's gone. It all happened so fast. You've been there so many times, but this is the last.
+
+       You were her only... friend? She used that word once. You had never heard this term before. It seemed positive.
+
+       You feel it's your responsibility to pick up her belongings before they get rid of them all.
+       """
+   , inventory = [ Keyset ]
    }
 
 main =
@@ -38,6 +45,7 @@ type InventoryItem
     = Diary
     | Keyfob
     | Crowbar
+    | Keyset
 
 type EntityKind
     = Simple
@@ -129,6 +137,7 @@ useItem item entity ({inventory, currentLocation} as model) =
                 | inventory = removeItem item model.inventory
                 , currentLocation = replaceEntity entity replacedWith currentLocation
                 , currentAction = Look
+                , infoText = "Well, looks like this did something."
                 }
 
             else
@@ -139,8 +148,16 @@ useItem item entity ({inventory, currentLocation} as model) =
 apartment =
     { location = Apartment
     , imagePath = "apartment.jpg"
-    , initialDescription = Just "TODO: First time you walk into the apartment"
-    , description = "TODO: Apartment description"
+    , initialDescription = Just
+        """Ada's apartment brings back so many memories. You can see her guitar lying in the back. There are programming books on the table, mostly about artificial intelligence and brain chip technology.
+
+
+           She had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the omniscient omnipotent AI used on everyone's brain chips.
+
+
+           This is where the accident happened. They said in the newspaper that it happened during a rountine upgrade to Singularity's mainframe. You tried to know more, but people at Singularity aren't talking to anyone about it.
+        """
+    , description = "Ada's apartment. There is so many books on AI and programming lying around!"
     , entities =
         [
             portalTo ApartmentStreet
@@ -150,7 +167,22 @@ apartment =
 
             , { kind = Item Diary
             , hitbox = { x = 641, y = 879, width = 187, height = 137 }
-            , description = "A Diary."
+            , description =
+                """
+                Ada's diary. You remember her filling it up religiously. You can't resist taking a look...
+
+                "[05/12/2055] There's this place in downtown Manhattan. They don't believe the Musk Law was a good thing either... They think things were different before... Before people had brain chips... They talked about something called 'emotions'?"
+
+                [Pages teared off]
+
+                "[10/15/2055] They managed to get me a job at Singularity... Had some connections there... apparently they used to do this all the time when the school was thriving."
+
+                [...]
+
+                "[12/28/2055] That's it! I think I have it! I tested it on my brain chip. I feel... different! Weird things. I cried. Felt happiness.
+                 Emotions? No time to wait. Need to deploy on Singularity's mainframe. No one can know before I make it happen. No one on the team knows."
+
+                """
             , imagePath = Just "items/diary.png"
             }
 
@@ -162,22 +194,32 @@ apartment =
         ]
     }
 
+lockedApartmentDoor =
+    { kind = Replaceable
+        { replacedWith = portalIntoApartment
+        , requiredItem = Keyset
+        }
+    , hitbox = { x = 21, y = 593, width = 68, height = 215 }
+    , description = "The door into Ada's apartment. It's locked."
+    , imagePath = Nothing
+    }
+
+portalIntoApartment = portalTo Apartment
+    { hitbox = { x = 21, y = 593, width = 68, height = 215 }
+    , description = "The unlocked door into Ada's apartment."
+    }
+
 apartmentStreet =
     { location = ApartmentStreet
     , imagePath = "apartment_street.jpg"
-    , initialDescription = Just "TODO: Welcome to the street"
-    , description = "As the street ends there is a door into the building where you live. To your right the street continues."
+    , initialDescription = Just "Back into the Street where Ada used to live."
+    , description = "As the street ends there is a door into the building where Ada used to live. To your right the street continues."
     , entities =
-        [
-            portalTo Apartment
-                { hitbox = { x = 21, y = 593, width = 68, height = 215 }
-                , description = "The door into your apartment."
-                }
-
-            , portalTo RCStreet
-                { hitbox = { x = 685, y = 0, width = 395, height = 735 }
-                , description = "A street that leads away from your apartment."
-                }
+        [ lockedApartmentDoor
+        , portalTo RCStreet
+            { hitbox = { x = 685, y = 0, width = 395, height = 735 }
+            , description = "A street that leads away from Ada's apartment."
+            }
         ]
     }
 
@@ -211,7 +253,10 @@ portalIntoRC =
 rcStreet =
     { location = RCStreet
     , imagePath = "rc_street.jpg"
-    , initialDescription = Just "TODO: Things are in shambles"
+    , initialDescription =
+        Just """This is the address that was mentioned on the keyfob. 455 Broadway. And old derelict building with condemned windows and doors.
+
+                It looks like there is ongoing work to demolish the building."""
     , description = "The building appears to have been under renovation, yet no one seems to have worked here in a long time."
     , entities =
         [
@@ -383,7 +428,7 @@ svgViewEntity ({hitbox, imagePath} as entity) =
             , y (toString hitbox.y)
             , height (toString hitbox.height)
             , width (toString hitbox.width)
-            , SA.class ([ "entity", (toString entity.kind) |> String.toLower, "debug" ] |> String.join " ")
+            , SA.class ([ "entity", (toString entity.kind) |> String.toLower ] |> String.join " ")
             , onClick (ExecuteAction entity)
             ]
     in

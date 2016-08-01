@@ -49,9 +49,10 @@ div#actionbuttons {
 
 .infotext {
     margin: 20px;
-    margin-top: 100px;
+    margin-top: 70px;
     font-family: monospace;
     color: #EEEEEE;
+    white-space: pre-line;
 }
 
 .inventory {
@@ -79,11 +80,11 @@ rect.entity {
 
 rect.entity.portal:hover {
     fill: yellow;
-    fill-opacity: 0.05;
+    fill-opacity: 0.035;
 }
 
 image.entity.item:hover {
-    opacity: 0.85;
+    opacity: 0.95;
 }
 
 rect.debug {
@@ -128,8 +129,7 @@ div#middle.action-look {
 }
 
 div#middle.action-use {
-    cursor: grab;
-    cursor: -webkit-grab;
+    cursor: crosshair;
 }
 
 div#middle > svg {
