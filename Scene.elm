@@ -55,6 +55,14 @@ type alias Entity =
     , kind : EntityKind
     }
 
+portalTo : Location -> { description: String, hitbox: Rect } -> Entity
+portalTo location entity =
+    { kind = Portal location
+    , description = entity.description
+    , hitbox = entity.hitbox
+    , imagePath = Nothing
+    }
+
 type Location
     = Apartment
     | ApartmentStreet
@@ -127,11 +135,10 @@ apartment =
     , imagePath = "apartment.jpg"
     , entities =
         [
-            { kind = Portal ApartmentStreet
-            , hitbox = { x = 245, y = 0, width = 225, height = 475 }
-            , description = "A door that leads into the street."
-            , imagePath = Nothing
-            }
+            portalTo ApartmentStreet
+                { hitbox = { x = 245, y = 0, width = 225, height = 475 }
+                , description = "A door that leads into the street."
+                }
 
             , { kind = Item Diary
             , hitbox = { x = 641, y = 879, width = 187, height = 137 }
@@ -153,17 +160,15 @@ apartmentStreet =
     , imagePath = "apartment_street.jpg"
     , entities =
         [
-            { kind = Portal Apartment
-            , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
-            , description = "The door into your apartment."
-            , imagePath = Nothing
-            }
+            portalTo Apartment
+                { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+                , description = "The door into your apartment."
+                }
 
-            , { kind = Portal RCStreet
-            , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
-            , description = "A street that leads away from your apartment."
-            , imagePath = Nothing
-            }
+            , portalTo RCStreet
+                { hitbox = { x = 980, y = 0, width = 100, height = 1080 }
+                , description = "A street that leads away from your apartment."
+                }
         ]
     }
 
@@ -190,11 +195,10 @@ lockedRCDoor =
     }
 
 portalIntoRC =
-    { kind = Portal RCWorkshop
-    , hitbox = { x = 1020, y = 0, width = 60, height = 1080 }
-    , description = "An open Door."
-    , imagePath = Nothing
-    }
+    portalTo RCWorkshop
+        { hitbox = { x = 1020, y = 0, width = 60, height = 1080 }
+        , description = "An open Door."
+        }
 
 -- Simple: RCEntrance (Replaced with a portal when used with key fob)
 rcStreet =
@@ -210,11 +214,10 @@ rcStreet =
 
             , planks
 
-            , { kind = Portal ApartmentStreet
-            , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
-            , description = "A street that leads back towards your apartment."
-            , imagePath = Nothing
-            }
+            , portalTo ApartmentStreet
+                { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+                , description = "A street that leads back towards your apartment."
+                }
         ]
     }
 
