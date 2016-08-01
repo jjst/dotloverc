@@ -134,9 +134,9 @@ apartment =
             }
 
             , { kind = Item Journal
-            , hitbox = { x = 400, y = 800, width = 50, height = 50 }
+            , hitbox = { x = 641, y = 879, width = 187, height = 137 }
             , description = "A Journal."
-            , imagePath = Nothing
+            , imagePath = Just "items/diary.png"
             }
 
             , { kind = Item Keyfob
