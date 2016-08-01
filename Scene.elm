@@ -36,7 +36,9 @@ type alias Entity = {
 
 type Location
     = Apartment
-    | RC
+    | ApartmentStreet
+    | RCStreet
+    | RCWorkshop
 
 type alias LocationProperties =
     { imagePath : String
@@ -69,28 +71,80 @@ changeLocation location ({currentLocation, otherLocations} as model) =
 
 type alias InventoryItem = String
 
+-- Items: Key Fob(Locks access to RC), Journal(Required to use the computer)
+-- Portal to the street
 apartment =
-    { imagePath = "img/apartment.jpg"
+    { location = Apartment
+    , imagePath = "img/apartment.jpg"
     , entities =
-        [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", kind = Portal RC }
-        , { hitbox = { x = 400, y = 0, width = 50, height = 50 }, description = "sky", kind = Item { name = "sky" } }
+        [
+            { kind = Portal ApartmentStreet
+            , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+            , description = "A door that leads into the street."
+            }
+
+            , { kind = Item { name = "journal" }
+            , hitbox = { x = 400, y = 800, width = 50, height = 50 }
+            , description = "A Journal."
+            }
+
+            , { kind = Item { name = "keyfob" }
+            , hitbox = { x = 500, y = 900, width = 50, height = 50 }
+            , description = "A grey plastic device attached to a keyring."
+            }
         ]
-    , location = Apartment
     }
 
-rc_workshop =
-    { imagePath = "img/rc_workshop.jpg"
+-- Portals: Apartment
+apartmentStreet =
+    { location = ApartmentStreet
+    , imagePath = "img/apartment_street.jpg"
     , entities =
-        [ { hitbox = { x = 0, y = 0, width = 300, height = 300 }, description = "apartment", kind = Portal Apartment }
+        [
+            { kind = Portal Apartment
+            , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+            , description = "The door into your apartment."
+            }
+
+            , { kind = Portal RCStreet
+            , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
+            , description = "A street that leads away from your apartment."
+            }
         ]
-    , location = RC
+    }
+
+-- Simple: RCEntrance (Replaced with a portal when used with key fob)
+rcStreet =
+    { location = RCStreet
+    , imagePath = "img/rc_street.jpg"
+    , entities =
+        [
+            { kind = Item { name = "planks" }
+            , hitbox = { x = 980, y = 0, width = 100, height = 1080 }
+            , description = "Some loose planks covering a door."
+            }
+
+            , { kind = Portal ApartmentStreet
+            , hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+            , description = "A street that leads back towards your apartment."
+            }
+        ]
+    }
+
+-- Simple: Computer
+rcWorkshop =
+    { location = RCWorkshop
+    , imagePath = "img/rc_workshop.jpg"
+    , entities =
+        [
+        ]
     }
 
 
 init = {
    currentAction = Look
    , currentLocation = apartment
-   , otherLocations = [rc_workshop]
+   , otherLocations = [apartmentStreet, rcStreet, rcWorkshop]
    , infoText = "You wake up all alone, and all your friends are dead. Welcome to the game!"
    , inventory = [ "A banana", "5 dollars" ]
    }
