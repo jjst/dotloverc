@@ -31,6 +31,7 @@ button.selected {
 div#actionbuttons {
     margin: auto;
     width: 90%;
+    text-align: center;
 }
 
 .menutitle {
@@ -51,6 +52,10 @@ div#actionbuttons {
     margin-top: 100px;
     font-family: monospace;
     color: #EEEEEE;
+}
+
+.inventory {
+    text-align: center;
 }
 
 .inventoryitem > button {
