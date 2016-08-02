@@ -1,8 +1,13 @@
 .loverc
 =======
-Love in the time of Elon Musk.
+A Point and Click about Love in the time of Elon Musk.
 
-Check out https://gist.github.com/jjst/9d54f429823be892650d5e1aa46ec8ad
+![.loverc](img/menu/loverc.jpg)
+
+Play it [here](https://jjst.github.io/dotloverc/)!
+
+This is still very much a work in progress. Report any issues, including confusing gameplay elements, unintuitive
+puzzles, etc, [here](https://github.com/jjst/dotloverc/issues).
 
 Building
 --------
