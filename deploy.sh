@@ -13,6 +13,6 @@ git fetch upstream
 git reset upstream/gh-pages
 
 
-git add -f -A dotloverc.js index.html style.css
+git add -f -A dotloverc.js index.html style.css img/items img/scenes
 git commit -m "Rebuild pages at ${rev}"
 git push -q upstream HEAD:gh-pages
