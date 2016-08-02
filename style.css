@@ -1,0 +1,138 @@
+body {
+    background-color: #222222;
+    padding:0;
+    margin:0;
+}
+
+#main {
+    padding:0;
+    margin:0;
+}
+
+
+button {
+    background-color: #CBE86B;
+    border: none;
+    color: #1C140D;
+    padding: 12px 26px;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+}
+
+button.selected {
+    background-color: #CBE8AB;
+}
+
+div#actionbuttons {
+    margin: auto;
+    width: 90%;
+    text-align: center;
+}
+
+.menutitle {
+    color: #EEEEEE;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+
+.infotext {
+    margin: 20px;
+    margin-top: 70px;
+    font-family: monospace;
+    color: #EEEEEE;
+    white-space: pre-line;
+}
+
+.inventory {
+    text-align: center;
+}
+
+.inventoryitem > button {
+    width: 200px;
+    margin: 10px;
+}
+
+.inventoryitem.selected > button {
+    background-color: #CBE8AB;
+}
+
+.inventoryempty {
+    color: #EEEEEE;
+    font-family: 'Oswald', sans-serif;
+    text-align: center;
+}
+
+rect.entity {
+    fill-opacity: 0;
+}
+
+rect.entity.portal:hover {
+    fill: yellow;
+    fill-opacity: 0.035;
+}
+
+image.entity.item:hover {
+    opacity: 0.95;
+}
+
+rect.debug {
+    stroke: blue;
+}
+
+#container {
+    display: flex;
+}
+
+#left, #middle, #right {display: inline-block; *display: inline; zoom: 1; vertical-align: top; font-size: 12px;}
+
+#left {
+    width: 25%;
+    height:100vh;
+}
+
+#right {
+    height:100vh;
+    flex-grow: 100;
+}
+
+div#middle {
+    width: 57%;
+    background-repeat:no-repeat;
+    background-size:contain;
+    height:100vh;
+    max-height: 100%;
+}
+
+div#middle.action-move {
+    cursor: s-resize;
+}
+
+div#middle.action-take {
+    cursor: grab;
+    cursor: -webkit-grab;
+}
+
+div#middle.action-look {
+    cursor: zoom-in;
+}
+
+div#middle.action-use {
+    cursor: crosshair;
+}
+
+div#middle > svg {
+    width: 100%;
+    max-height: 95%;
+}
