@@ -189,7 +189,7 @@ apartment =
             }
 
             , { kind = Item Keyfob
-            , hitbox = { x = 936, y = 630, width = 80, height = 30 }
+            , hitbox = { x = 926, y = 615, width = 100, height = 65 }
             , description = "A grey plastic device attached to a keyring. An address is written on it: 455 Broadway"
             , imagePath = Just "items/keyfob.png"
             }
