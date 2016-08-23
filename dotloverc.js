@@ -8245,6 +8245,18 @@ var _elm_lang$svg$Svg_Attributes$accumulate = _elm_lang$virtual_dom$VirtualDom$a
 var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$attribute('accelerate');
 var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
 
+var _user$project$Scene$css = function (path) {
+	return A3(
+		_elm_lang$html$Html$node,
+		'link',
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$rel('stylesheet'),
+				_elm_lang$html$Html_Attributes$href(path)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
 var _user$project$Scene$actionClass = function (action) {
 	return A2(
 		_elm_lang$core$Basics_ops['++'],
@@ -8693,7 +8705,7 @@ var _user$project$Scene$renderActionButton = F2(
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$svg$Svg$text(
+					_elm_lang$html$Html$text(
 					_elm_lang$core$Basics$toString(a))
 				]));
 	});
@@ -8723,7 +8735,7 @@ var _user$project$Scene$renderInventoryItem = F2(
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$svg$Svg$text(
+					_elm_lang$html$Html$text(
 					_elm_lang$core$Basics$toString(item))
 				]));
 		return A2(
@@ -8742,24 +8754,18 @@ var _user$project$Scene$view = function (_p25) {
 	var _p28 = _p26.inventory;
 	var _p27 = _p26.currentAction;
 	var entityRects = A2(_elm_lang$core$List$map, _user$project$Scene$svgViewEntity, _p29.currentLocation.entities);
-	var sceneBackgroundSize = _elm_lang$core$Native_List.fromArray(
-		[
-			_elm_lang$svg$Svg_Attributes$x('0'),
-			_elm_lang$svg$Svg_Attributes$y('0'),
-			_elm_lang$svg$Svg_Attributes$height('1080'),
-			_elm_lang$svg$Svg_Attributes$width('1080')
-		]);
 	var sceneBackground = A2(
 		_elm_lang$svg$Svg$image,
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$svg$Svg_Attributes$xlinkHref(
-					A2(_elm_lang$core$Basics_ops['++'], 'img/scenes/', _p29.currentLocation.imagePath)),
-					_elm_lang$html$Html_Events$onClick(_user$project$Scene$LocationAction)
-				]),
-			sceneBackgroundSize),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$xlinkHref(
+				A2(_elm_lang$core$Basics_ops['++'], 'img/scenes/', _p29.currentLocation.imagePath)),
+				_elm_lang$html$Html_Events$onClick(_user$project$Scene$LocationAction),
+				_elm_lang$svg$Svg_Attributes$x('0'),
+				_elm_lang$svg$Svg_Attributes$y('0'),
+				_elm_lang$svg$Svg_Attributes$height('1080'),
+				_elm_lang$svg$Svg_Attributes$width('1080')
+			]),
 		_elm_lang$core$Native_List.fromArray(
 			[]));
 	var sceneView = A2(
@@ -8796,7 +8802,7 @@ var _user$project$Scene$view = function (_p25) {
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$svg$Svg$text('(empty)')
+					_elm_lang$html$Html$text('(empty)')
 				]))
 		]) : A2(
 		_elm_lang$core$List$map,
@@ -8818,7 +8824,7 @@ var _user$project$Scene$view = function (_p25) {
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$svg$Svg$text('Inventory')
+						_elm_lang$html$Html$text('Inventory')
 					])),
 				A2(
 				_elm_lang$html$Html$div,
@@ -8849,7 +8855,7 @@ var _user$project$Scene$view = function (_p25) {
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$svg$Svg$text('Actions')
+						_elm_lang$html$Html$text('Actions')
 					])),
 				A2(
 				_elm_lang$html$Html$div,
@@ -8866,7 +8872,7 @@ var _user$project$Scene$view = function (_p25) {
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$svg$Svg$text(_p26.infoText)
+						_elm_lang$html$Html$text(_p26.infoText)
 					]))
 			]));
 	return A2(
@@ -8876,7 +8882,12 @@ var _user$project$Scene$view = function (_p25) {
 				_elm_lang$html$Html_Attributes$id('container')
 			]),
 		_elm_lang$core$Native_List.fromArray(
-			[actionPane, mainPane, inventoryPane]));
+			[
+				_user$project$Scene$css('style.css'),
+				actionPane,
+				mainPane,
+				inventoryPane
+			]));
 };
 var _user$project$Scene$main = {
 	main: _elm_lang$html$Html_App$beginnerProgram(
