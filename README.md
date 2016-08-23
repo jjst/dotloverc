@@ -13,4 +13,5 @@ Building
 --------
 
 You need Elm.
-Run `./build.sh` then open `index.html` in your browser.
+Run `elm make Scene.elm --output=dotloverc.js` then open `index.html` in your browser.
+Or use Elm reactor!

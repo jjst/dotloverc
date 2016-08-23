@@ -2,11 +2,11 @@ module Scene exposing (..)
 
 import List
 import String
-import Html exposing (Html, div, button, img)
+import Html exposing (Html, div, button, img, text, node)
 import Html.Attributes as HA
 import Html.App as App
 import Html.Events exposing (onClick)
-import Svg exposing (..)
+import Svg exposing (Svg, svg, image, g, rect)
 import Svg.Attributes as SA
 import Svg.Attributes exposing (..)
 
@@ -415,9 +415,14 @@ view ({inventory, currentAction, infoText} as model) =
                 inventory |> List.map (renderInventoryItem currentAction)
 
         -- TODO: Factor size of backgrounds and viewBox into a shared constant
-        sceneBackgroundSize = [ x "0", y "0", height "1080", width "1080" ]
         sceneBackground = image
-            ([ xlinkHref ("img/scenes/" ++ model.currentLocation.imagePath), onClick LocationAction ] ++ sceneBackgroundSize) []
+            [ xlinkHref ("img/scenes/" ++ model.currentLocation.imagePath)
+            , onClick LocationAction
+            , x "0"
+            , y "0"
+            , height "1080"
+            , width "1080"
+            ] []
         entityRects = List.map svgViewEntity model.currentLocation.entities
         sceneView =
             g [] (sceneBackground :: entityRects)
@@ -437,8 +442,16 @@ view ({inventory, currentAction, infoText} as model) =
                 , div [ class "inventory" ] inventoryItems
                 ]
     in
-       div [ HA.id "container" ] [ actionPane, mainPane, inventoryPane ]
+       div [ HA.id "container" ]
+           [ css "style.css"
+           , actionPane
+           , mainPane
+           , inventoryPane
+           ]
 
+css : String -> Html a
+css path =
+  node "link" [ HA.rel "stylesheet", HA.href path ] []
 
 svgViewEntity : Entity -> Svg Msg
 svgViewEntity ({hitbox, imagePath} as entity) =
