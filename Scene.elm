@@ -216,7 +216,7 @@ apartmentStreet =
     { location = ApartmentStreet
     , imagePath = "apartment_street.jpg"
     , initialDescription = Just "Back into the street where Ada's apartment is."
-    , description = "As the street ends there is a door into the building where Ada used to live. To your right the street continues."
+    , description = "This is the street where Ada's apartment block is located."
     , entities =
         [ lockedApartmentDoor
         , portalTo RCStreet
