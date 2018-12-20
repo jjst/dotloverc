@@ -2,9 +2,8 @@ module Scene exposing (..)
 
 import List
 import String
-import Html exposing (Html, div, button, img, text, node)
+import Html exposing (Html, beginnerProgram, div, button, img, text, node)
 import Html.Attributes as HA
-import Html.App as App
 import Html.Events exposing (onClick)
 import Svg exposing (Svg, svg, image, g, rect)
 import Svg.Attributes as SA
@@ -26,7 +25,7 @@ init = {
    }
 
 main =
-    App.beginnerProgram
+    beginnerProgram
         { model = init
         , update = update
         , view = view
@@ -193,6 +192,10 @@ apartment =
             , description = "A grey plastic device attached to a keyring. An address is written on it: 455 Broadway"
             , imagePath = Just "items/keyfob.png"
             }
+            , couch
+            , library
+            , library2
+            , guitar
         ]
     }
 
@@ -278,6 +281,52 @@ rcStreet =
                 , description = "A street that leads back towards your apartment."
                 }
         ]
+    }
+
+couch =
+    { kind = Simple
+    , hitbox = { x = 0, y = 720, width = 300, height = 300 }
+    , description =
+        """
+        Nothing on the couch except a bunch of cushions.
+        """
+    , imagePath = Nothing
+    }
+
+guitar =
+    { kind = Simple
+    , hitbox = { x = 460, y = 530, width = 100, height = 220 }
+    , description =
+        """
+        That's Ada's guitar.
+        """
+    , imagePath = Nothing
+    }
+
+library =
+    { kind = Simple
+    , hitbox = { x = 570, y = 0, width = 250, height = 750 }
+    , description =
+        """
+        There are lots of books about machine learning and artificial intelligence on the bookshelves. 
+        
+        You can also see some old 20th century books about human psychology and sociology.
+        """
+    , imagePath = Nothing
+    }
+
+library2 =
+    { kind = Simple
+    , hitbox = { x = 845, y = 300, width = 220, height = 300 }
+    , description =
+        """
+        There are lots of books about machine learning and artificial intelligence on the bookshelves. 
+        
+        You can also see some old 20th century books about human psychology and sociology.
+
+        Looking more closely, you can distinguish something hidden behind some of the books. It might be worth taking a closer look...
+        """
+    , imagePath = Nothing
     }
 
 computer =

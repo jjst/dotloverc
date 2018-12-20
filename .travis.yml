@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - "4.3"
 install:
-  - npm install -g elm@0.17.0
+  - npm install -g elm@0.18.0
   - elm-package install -y
 script:
   - elm make Scene.elm --output=dotloverc.js
