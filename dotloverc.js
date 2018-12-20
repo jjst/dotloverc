@@ -8507,9 +8507,9 @@ var _user$project$Scene$portalIntoApartment = A2(
 	});
 var _user$project$Scene$lockedApartmentDoor = {
 	kind: _user$project$Scene$Replaceable(
-		{replacedWith: _user$project$Scene$portalIntoApartment, message: 'You use Ada\'s keys to open the door leading to her apartment.', requiredItem: _user$project$Scene$Keyset}),
+		{replacedWith: _user$project$Scene$portalIntoApartment, message: 'Using your spare set of keys, you effortlessly unlock the main entrance door leading to her apartment.', requiredItem: _user$project$Scene$Keyset}),
 	hitbox: {x: 21, y: 593, width: 68, height: 215},
-	description: 'The door into Ada\'s apartment. It\'s locked.',
+	description: 'The main entrance of the building where Ada used to live. Peeking in, you can see the familiar set of stairs leading into her flat. The door is locked, but you still have the spare set of keys Ada left you a while back.',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$apartmentStreet = {
@@ -8540,7 +8540,7 @@ var _user$project$Scene$init = {
 	currentLocation: _user$project$Scene$apartmentStreet,
 	otherLocations: _elm_lang$core$Native_List.fromArray(
 		[_user$project$Scene$apartment, _user$project$Scene$rcStreet, _user$project$Scene$rcWorkshop]),
-	infoText: '\n       That\'s it. Ada\'s place in East Harlem. You still can\'t believe she\'s gone. It all happened so fast. You\'ve been there so many times, but this is the last.\n\n       You were her only... friend? She used that word once. You had never heard this term before. It seemed positive.\n\n       You feel it\'s your responsibility to pick up her belongings before they get rid of them all.\n       ',
+	infoText: '\n       That\'s it. Ada\'s place in East Harlem. You still can\'t believe she\'s gone. It all happened so fast. You\'ve been there so many times, but this is the last.\n\n       You were her only... friend? She used that word once. You had never heard this term before. It seemed positive.\n\n       Hopefully they haven\'t gotten here before you. You feel it\'s your responsibility to pick up her belongings before they get rid of them all. And maybe you\'ll be able to find some answers too?\n       ',
 	inventory: _elm_lang$core$Native_List.fromArray(
 		[_user$project$Scene$Keyset])
 };
