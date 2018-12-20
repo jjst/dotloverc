@@ -8503,7 +8503,7 @@ var _user$project$Scene$portalIntoApartment = A2(
 	_user$project$Scene$Apartment,
 	{
 		hitbox: {x: 21, y: 593, width: 68, height: 215},
-		description: 'The unlocked door into Ada\'s apartment.'
+		description: 'The main entrance into Ada\'s apartment block. It\'s now unlocked.'
 	});
 var _user$project$Scene$lockedApartmentDoor = {
 	kind: _user$project$Scene$Replaceable(
@@ -8525,7 +8525,7 @@ var _user$project$Scene$apartmentStreet = {
 			_user$project$Scene$RCStreet,
 			{
 				hitbox: {x: 685, y: 0, width: 395, height: 735},
-				description: 'A street that leads away from Ada\'s apartment.'
+				description: 'This is the street you came from. It leads away from Ada\'s apartment.'
 			})
 		])
 };
