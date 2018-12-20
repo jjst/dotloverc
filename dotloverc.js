@@ -8516,7 +8516,7 @@ var _user$project$Scene$apartmentStreet = {
 	location: _user$project$Scene$ApartmentStreet,
 	imagePath: 'apartment_street.jpg',
 	initialDescription: _elm_lang$core$Maybe$Just('Back into the street where Ada\'s apartment is.'),
-	description: 'As the street ends there is a door into the building where Ada used to live. To your right the street continues.',
+	description: 'This is the street where Ada\'s apartment block is located.',
 	entities: _elm_lang$core$Native_List.fromArray(
 		[
 			_user$project$Scene$lockedApartmentDoor,
