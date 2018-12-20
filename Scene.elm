@@ -151,13 +151,13 @@ apartment =
     { location = Apartment
     , imagePath = "apartment.jpg"
     , initialDescription = Just
-        """Ada's apartment brings back so many memories. You can see her guitar lying in the back. There are programming books on the table, mostly about artificial intelligence and brain chip technology.
+        """Ada's apartment brings back so many memories. You can see her guitar lying in the back. On the table, you can see a pile of books about artificial intelligence and brain chip technology.
 
 
-           She had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the omniscient omnipotent AI used on everyone's brain implants.
+           Ada had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the revolutionary AI used to power brain implants.
 
 
-           This is where the accident happened. They said in the newspaper that it happened during a routine upgrade to Singularity's mainframe. You tried to know more, but people at Singularity aren't talking to anyone about it.
+           This is where the accident happened. They said in the news that it was caused by an operator error during a routine upgrade to Singularity's mainframe. Something in the news reports didn't seem to add up, though. You can't quite figure out why yet. Maybe you'll find some clues here...
         """
     , description = "Ada's apartment. There is so many books on AI and programming lying around!"
     , entities =
