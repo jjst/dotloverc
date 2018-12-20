@@ -8763,6 +8763,12 @@ var _user$project$Scene$guitar = {
 	description: '\n        That\'s Ada\'s guitar.\n        ',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
+var _user$project$Scene$books = {
+	kind: _user$project$Scene$Simple,
+	hitbox: {x: 790, y: 970, width: 150, height: 100},
+	description: '\n        Some books are lying on the table. \"Superintelligence: Paths, Dangers, Strategies\", and \"How Emotions Are Made\". Some page are heavily annotated with comments and drawings. It looks like Ada\'s handwriting.\n        ',
+	imagePath: _elm_lang$core$Maybe$Nothing
+};
 var _user$project$Scene$library = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 570, y: 0, width: 250, height: 750},
@@ -8814,7 +8820,7 @@ var _user$project$Scene$RCStreet = {ctor: 'RCStreet'};
 var _user$project$Scene$rcWorkshop = {
 	location: _user$project$Scene$RCWorkshop,
 	imagePath: 'rc_workshop.jpg',
-	initialDescription: _elm_lang$core$Maybe$Just('You enter the first floor of the building. The floor looks abandoned, with spare computer parts and electronic lying around\n\n           You adventure in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain implants and electronic parts, and very old books on artificial intelligence, some dating from the 20th century.\n        '),
+	initialDescription: _elm_lang$core$Maybe$Just('You enter the first floor of the building. The floor looks abandoned, with spare computer parts and electronic lying around.\n\n           You venture in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain implants and electronic parts on the table. Additional boxes on the ground contain some very old books on artificial intelligence, some dating from the 20th century.\n        '),
 	description: 'A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional.',
 	entities: {
 		ctor: '::',
@@ -8856,7 +8862,7 @@ var _user$project$Scene$rcStreet = {
 					_user$project$Scene$ApartmentStreet,
 					{
 						hitbox: {x: 0, y: 0, width: 100, height: 1080},
-						description: 'A street that leads back towards your apartment.'
+						description: 'Going this way leads back to Ada\'s apartment building.'
 					}),
 				_1: {ctor: '[]'}
 			}
@@ -8876,7 +8882,7 @@ var _user$project$Scene$apartment = {
 			_user$project$Scene$ApartmentStreet,
 			{
 				hitbox: {x: 245, y: 0, width: 225, height: 475},
-				description: 'A door that leads into the street.'
+				description: 'The main door of the flat - it leads back outside.'
 			}),
 		_1: {
 			ctor: '::',
@@ -8906,7 +8912,11 @@ var _user$project$Scene$apartment = {
 							_1: {
 								ctor: '::',
 								_0: _user$project$Scene$guitar,
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: _user$project$Scene$books,
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}
