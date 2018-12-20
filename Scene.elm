@@ -163,7 +163,7 @@ apartment =
         [
             portalTo ApartmentStreet
                 { hitbox = { x = 245, y = 0, width = 225, height = 475 }
-                , description = "A door that leads into the street."
+                , description = "The main door of the flat - it leads back outside."
                 }
 
             , { kind = Item Diary
@@ -196,6 +196,7 @@ apartment =
             , library
             , library2
             , guitar
+            , books
         ]
     }
 
@@ -278,7 +279,7 @@ rcStreet =
 
             , portalTo ApartmentStreet
                 { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
-                , description = "A street that leads back towards your apartment."
+                , description = "Going this way leads back to Ada's apartment building."
                 }
         ]
     }
@@ -303,6 +304,15 @@ guitar =
     , imagePath = Nothing
     }
 
+books =
+    { kind = Simple
+    , hitbox = { x = 790, y = 970, width = 150, height = 100 }
+    , description =
+        """
+        Some books are lying on the table. "Superintelligence: Paths, Dangers, Strategies", and "How Emotions Are Made". Some page are heavily annotated with comments and drawings. It looks like Ada's handwriting.
+        """
+    , imagePath = Nothing
+    }
 library =
     { kind = Simple
     , hitbox = { x = 570, y = 0, width = 250, height = 750 }
@@ -362,9 +372,9 @@ rcWorkshop =
     { location = RCWorkshop
     , imagePath = "rc_workshop.jpg"
     , initialDescription = Just
-        """You enter the first floor of the building. The floor looks abandoned, with spare computer parts and electronic lying around
+        """You enter the first floor of the building. The floor looks abandoned, with spare computer parts and electronic lying around.
 
-           You adventure in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain implants and electronic parts, and very old books on artificial intelligence, some dating from the 20th century.
+           You venture in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain implants and electronic parts on the table. Additional boxes on the ground contain some very old books on artificial intelligence, some dating from the 20th century.
         """
     , description = "A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional."
     , entities = [ lockedComputer
