@@ -20,7 +20,7 @@ init = {
 
        You were her only... friend? She used that word once. You had never heard this term before. It seemed positive.
 
-       You feel it's your responsibility to pick up her belongings before they get rid of them all.
+       Hopefully they haven't gotten here before you. You feel it's your responsibility to pick up her belongings before they get rid of them all. And maybe you'll be able to find some answers too?
        """
    , inventory = [ Keyset ]
    }
@@ -199,7 +199,7 @@ apartment =
 lockedApartmentDoor =
     { kind = Replaceable
         { replacedWith = portalIntoApartment
-        , message = "You use Ada's keys to open the door leading to her apartment."
+        , message = "Using your spare set of keys, you effortlessly unlock the main entrance door leading to her apartment."
         , requiredItem = Keyset
         }
     , hitbox = { x = 21, y = 593, width = 68, height = 215 }
