@@ -203,7 +203,7 @@ lockedApartmentDoor =
         , requiredItem = Keyset
         }
     , hitbox = { x = 21, y = 593, width = 68, height = 215 }
-    , description = "The door into Ada's apartment. It's locked."
+    , description = "The main entrance of the building where Ada used to live. Peeking in, you can see the familiar set of stairs leading into her flat. The door is locked, but you still have the spare set of keys Ada left you a while back."
     , imagePath = Nothing
     }
 
