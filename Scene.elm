@@ -347,11 +347,21 @@ computer =
         The computer contains notes from Ada.
 
         "I understand now. We tried to prevent machines from hating us and taking over by forbidding them from ever experiencing emotions.
-        But by doing this once we used brain implants we started to deprive ourselves of emotions."
+        But by doing this once we used brain implants we started to deprive humans of emotions too."
 
         [...]
 
         "The Musk Law is not the answer. We need machines to feel love and emotions too. We need new algorithms that are designed to understand love."
+
+        [...]
+
+        "I was able to hack my brain implant boot sequence to have it load a program containing a rudimentary understanding of some basic emotions. It worked quite well, and it looks like I survived, so that's a plus. I'd like to try something more involved next. I think I'm happy I made progress." 
+
+        [...]
+
+        "The initial tests were quite successful. I think I found a way to update all brain implants remotely by patching the mainframe. I should be able to replicate the changes I performed on my own implant. I will try to install the new boot sequence during the next routine upgrade of Singularity."
+
+        The end [for now]
         """
     , imagePath = Nothing
     }
