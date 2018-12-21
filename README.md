@@ -1,6 +1,6 @@
 .loverc
 =======
-A Point and Click about machines, emotions, friendship, and love.
+A Point and Click about machines, emotions, friendship, and love. Can you help deploy a boot script to help humans feel love again?
 
 ![.loverc](img/menu/loverc.jpg)
 
