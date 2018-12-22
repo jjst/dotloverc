@@ -203,7 +203,7 @@ apartment =
 lockedApartmentDoor =
     { kind = Replaceable
         { replacedWith = portalIntoApartment
-        , message = "Using your spare set of keys, you effortlessly unlock the main entrance door leading to her apartment."
+        , message = "Using your spare set of keys, you effortlessly unlock the main entrance door leading to Ada's apartment."
         , requiredItem = Keyset
         }
     , hitbox = { x = 21, y = 593, width = 68, height = 215 }
@@ -309,7 +309,7 @@ books =
     , hitbox = { x = 790, y = 970, width = 150, height = 100 }
     , description =
         """
-        Some books are lying on the table. "Superintelligence: Paths, Dangers, Strategies", and "How Emotions Are Made". Some page are heavily annotated with comments and drawings. It looks like Ada's handwriting.
+        Some books are lying on the table. "Superintelligence: Paths, Dangers, Strategies", and "How Emotions Are Made". Some page are heavily annotated with comments and drawings; it looks like Ada's handwriting.
         """
     , imagePath = Nothing
     }
