@@ -150,7 +150,10 @@ apartment =
     { location = Apartment
     , imagePath = "apartment.jpg"
     , initialDescription = Just
-        """Ada's apartment brings back so many memories. You can see her guitar lying in the back. On the table, you can see a pile of books about artificial intelligence and brain chip technology.
+        """It looks like you're the first to get here.
+
+        
+           Ada's apartment brings back so many memories. You can see her guitar lying in the back. On the table, there are books about artificial intelligence and brain chip technology.
 
 
            Ada had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the revolutionary AI used to power brain implants.
@@ -245,11 +248,11 @@ planks =
 lockedRCDoor =
     { kind = Replaceable
         { replacedWith = portalIntoRC
-        , message = "You use the keyfob from Ada's apartment to successfully unlock the door."
+        , message = "You place the keyfob you found in Ada's apartment against the detector, which turns green. The door emits a faint clicking noise. It's unlocked!"
         , requiredItem = Keyfob
         }
     , hitbox = { x = 779, y = 735, width = 65, height = 185 }
-    , description = "The door is accessible, but it it is still locked."
+    , description = "The door is now accessible, but it is locked. There seems to be a security panel with some kind of RFID detector next to the door."
     , imagePath = Nothing
     }
 
@@ -259,28 +262,37 @@ portalIntoRC =
         , description = "The door is now open. You have a peek inside. There are stairs leading into some kind of abandoned workshop."
         }
 
+crowbar = 
+    { kind = Item Crowbar
+    , hitbox = { x = 636, y = 1080-79-32, width = 66, height = 32 }
+    , description = "A well blacksmithed sturdy steel crowbar."
+    , imagePath = Just "items/crowbar.png"
+    }
+
+windows =
+    { kind = Simple
+    , hitbox = { x = 265, y = 120, width = 420, height = 180 }
+    , description =
+        """
+        The building looks abandoned, but strangely enough the lights at this floor seem to be on.
+        """
+    , imagePath = Nothing
+    }
+
 rcStreet =
     { location = RCStreet
     , imagePath = "rc_street.jpg"
     , initialDescription =
-        Just """This is the address that was mentioned on the keyfob. 455 Broadway. And old derelict building with condemned windows and doors.
-
-                It looks like there is ongoing work to demolish the building."""
+        Just """This is the address that was mentioned on the keyfob. 455 Broadway. And old derelict building with condemned windows and doors."""
     , description = "The building appears to have been under renovation, yet no one seems to have worked here in a long time."
     , entities =
-        [
-            { kind = Item Crowbar
-            , hitbox = { x = 636, y = 1080-79-32, width = 66, height = 32 }
-            , description = "A well blacksmithed sturdy steel crowbar."
-            , imagePath = Just "items/crowbar.png"
+        [ crowbar
+        , windows
+        , planks
+        , portalTo ApartmentStreet
+            { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
+            , description = "Going this way leads back to Ada's apartment building."
             }
-
-            , planks
-
-            , portalTo ApartmentStreet
-                { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
-                , description = "Going this way leads back to Ada's apartment building."
-                }
         ]
     }
 
@@ -313,6 +325,7 @@ books =
         """
     , imagePath = Nothing
     }
+
 library =
     { kind = Simple
     , hitbox = { x = 570, y = 0, width = 250, height = 750 }
