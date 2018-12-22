@@ -8766,7 +8766,7 @@ var _user$project$Scene$guitar = {
 var _user$project$Scene$books = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 790, y: 970, width: 150, height: 100},
-	description: '\n        Some books are lying on the table. \"Superintelligence: Paths, Dangers, Strategies\", and \"How Emotions Are Made\". Some page are heavily annotated with comments and drawings. It looks like Ada\'s handwriting.\n        ',
+	description: '\n        Some books are lying on the table. \"Superintelligence: Paths, Dangers, Strategies\", and \"How Emotions Are Made\". Some page are heavily annotated with comments and drawings; it looks like Ada\'s handwriting.\n        ',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$library = {
@@ -8934,7 +8934,7 @@ var _user$project$Scene$portalIntoApartment = A2(
 	});
 var _user$project$Scene$lockedApartmentDoor = {
 	kind: _user$project$Scene$Replaceable(
-		{replacedWith: _user$project$Scene$portalIntoApartment, message: 'Using your spare set of keys, you effortlessly unlock the main entrance door leading to her apartment.', requiredItem: _user$project$Scene$Keyset}),
+		{replacedWith: _user$project$Scene$portalIntoApartment, message: 'Using your spare set of keys, you effortlessly unlock the main entrance door leading to Ada\'s apartment.', requiredItem: _user$project$Scene$Keyset}),
 	hitbox: {x: 21, y: 593, width: 68, height: 215},
 	description: 'The main entrance of the building where Ada used to live. Peeking in, you can see the familiar set of stairs leading into her flat. The door is locked, but you still have the spare set of keys Ada left you a while back.',
 	imagePath: _elm_lang$core$Maybe$Nothing
