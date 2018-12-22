@@ -8738,6 +8738,12 @@ var _user$project$Scene$Replaceable = function (a) {
 var _user$project$Scene$Item = function (a) {
 	return {ctor: 'Item', _0: a};
 };
+var _user$project$Scene$crowbar = {
+	kind: _user$project$Scene$Item(_user$project$Scene$Crowbar),
+	hitbox: {x: 636, y: (1080 - 79) - 32, width: 66, height: 32},
+	description: 'A well blacksmithed sturdy steel crowbar.',
+	imagePath: _elm_lang$core$Maybe$Just('items/crowbar.png')
+};
 var _user$project$Scene$Portal = function (a) {
 	return {ctor: 'Portal', _0: a};
 };
@@ -8751,6 +8757,12 @@ var _user$project$Scene$portalTo = F2(
 		};
 	});
 var _user$project$Scene$Simple = {ctor: 'Simple'};
+var _user$project$Scene$windows = {
+	kind: _user$project$Scene$Simple,
+	hitbox: {x: 265, y: 120, width: 420, height: 180},
+	description: '\n        The building looks abandoned, but strangely enough the lights at this floor seem to be on.\n        ',
+	imagePath: _elm_lang$core$Maybe$Nothing
+};
 var _user$project$Scene$couch = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 0, y: 720, width: 300, height: 300},
@@ -8804,9 +8816,9 @@ var _user$project$Scene$portalIntoRC = A2(
 	});
 var _user$project$Scene$lockedRCDoor = {
 	kind: _user$project$Scene$Replaceable(
-		{replacedWith: _user$project$Scene$portalIntoRC, message: 'You use the keyfob from Ada\'s apartment to successfully unlock the door.', requiredItem: _user$project$Scene$Keyfob}),
+		{replacedWith: _user$project$Scene$portalIntoRC, message: 'You place the keyfob you found in Ada\'s apartment against the detector, which turns green. The door emits a faint clicking noise. It\'s unlocked!', requiredItem: _user$project$Scene$Keyfob}),
 	hitbox: {x: 779, y: 735, width: 65, height: 185},
-	description: 'The door is accessible, but it it is still locked.',
+	description: 'The door is now accessible, but it is locked. There seems to be a security panel with some kind of RFID detector next to the door.',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$planks = {
@@ -8842,29 +8854,28 @@ var _user$project$Scene$ApartmentStreet = {ctor: 'ApartmentStreet'};
 var _user$project$Scene$rcStreet = {
 	location: _user$project$Scene$RCStreet,
 	imagePath: 'rc_street.jpg',
-	initialDescription: _elm_lang$core$Maybe$Just('This is the address that was mentioned on the keyfob. 455 Broadway. And old derelict building with condemned windows and doors.\n\n                It looks like there is ongoing work to demolish the building.'),
+	initialDescription: _elm_lang$core$Maybe$Just('This is the address that was mentioned on the keyfob. 455 Broadway. And old derelict building with condemned windows and doors.'),
 	description: 'The building appears to have been under renovation, yet no one seems to have worked here in a long time.',
 	entities: {
 		ctor: '::',
-		_0: {
-			kind: _user$project$Scene$Item(_user$project$Scene$Crowbar),
-			hitbox: {x: 636, y: (1080 - 79) - 32, width: 66, height: 32},
-			description: 'A well blacksmithed sturdy steel crowbar.',
-			imagePath: _elm_lang$core$Maybe$Just('items/crowbar.png')
-		},
+		_0: _user$project$Scene$crowbar,
 		_1: {
 			ctor: '::',
-			_0: _user$project$Scene$planks,
+			_0: _user$project$Scene$windows,
 			_1: {
 				ctor: '::',
-				_0: A2(
-					_user$project$Scene$portalTo,
-					_user$project$Scene$ApartmentStreet,
-					{
-						hitbox: {x: 0, y: 0, width: 100, height: 1080},
-						description: 'Going this way leads back to Ada\'s apartment building.'
-					}),
-				_1: {ctor: '[]'}
+				_0: _user$project$Scene$planks,
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_user$project$Scene$portalTo,
+						_user$project$Scene$ApartmentStreet,
+						{
+							hitbox: {x: 0, y: 0, width: 100, height: 1080},
+							description: 'Going this way leads back to Ada\'s apartment building.'
+						}),
+					_1: {ctor: '[]'}
+				}
 			}
 		}
 	}
@@ -8873,7 +8884,7 @@ var _user$project$Scene$Apartment = {ctor: 'Apartment'};
 var _user$project$Scene$apartment = {
 	location: _user$project$Scene$Apartment,
 	imagePath: 'apartment.jpg',
-	initialDescription: _elm_lang$core$Maybe$Just('Ada\'s apartment brings back so many memories. You can see her guitar lying in the back. On the table, you can see a pile of books about artificial intelligence and brain chip technology.\n\n\n           Ada had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the revolutionary AI used to power brain implants.\n\n\n           This is where the accident happened. They said in the news that it was caused by an operator error during a routine upgrade to Singularity\'s mainframe. Something in the news reports didn\'t seem to add up, though. You can\'t quite figure out why yet. Maybe you\'ll find some clues here...\n        '),
+	initialDescription: _elm_lang$core$Maybe$Just('It looks like you\'re the first to get here.\n\n        \n           Ada\'s apartment brings back so many memories. You can see her guitar lying in the back. On the table, there are books about artificial intelligence and brain chip technology.\n\n\n           Ada had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the revolutionary AI used to power brain implants.\n\n\n           This is where the accident happened. They said in the news that it was caused by an operator error during a routine upgrade to Singularity\'s mainframe. Something in the news reports didn\'t seem to add up, though. You can\'t quite figure out why yet. Maybe you\'ll find some clues here...\n        '),
 	description: 'Ada\'s apartment. There is so many books on AI and programming lying around!',
 	entities: {
 		ctor: '::',
