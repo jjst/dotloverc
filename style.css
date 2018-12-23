@@ -49,7 +49,7 @@ div#actionbuttons {
 
 .infotext {
     margin: 20px;
-    margin-top: 70px;
+    margin-top: 40px;
     font-family: monospace;
     color: #EEEEEE;
     white-space: pre-line;
@@ -76,11 +76,6 @@ div#actionbuttons {
 
 rect.entity {
     fill-opacity: 0;
-}
-
-rect.entity.portal:hover {
-    fill: yellow;
-    fill-opacity: 0.035;
 }
 
 image.entity.item:hover {

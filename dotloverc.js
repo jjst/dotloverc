@@ -8652,53 +8652,6 @@ var _user$project$Scene$replaceEntity = F3(
 					{ctor: '::', _0: newEntity, _1: location.entities})
 			});
 	});
-var _user$project$Scene$changeLocation = F2(
-	function (location, _p1) {
-		var _p2 = _p1;
-		var _p7 = _p2.otherLocations;
-		var _p6 = _p2;
-		var _p3 = _elm_lang$core$List$head(
-			A2(
-				_elm_lang$core$List$filter,
-				function (e) {
-					return _elm_lang$core$Native_Utils.eq(e.location, location);
-				},
-				_p7));
-		if (_p3.ctor === 'Just') {
-			var _p5 = _p3._0;
-			var description = function () {
-				var _p4 = _p5.initialDescription;
-				if (_p4.ctor === 'Just') {
-					return _p4._0;
-				} else {
-					return _p5.description;
-				}
-			}();
-			return _elm_lang$core$Native_Utils.update(
-				_p6,
-				{
-					currentLocation: _elm_lang$core$Native_Utils.update(
-						_p5,
-						{initialDescription: _elm_lang$core$Maybe$Nothing}),
-					otherLocations: A2(
-						_elm_lang$core$List$filter,
-						function (e) {
-							return !_elm_lang$core$Native_Utils.eq(e.location, location);
-						},
-						{ctor: '::', _0: _p2.currentLocation, _1: _p7}),
-					infoText: description
-				});
-		} else {
-			return _elm_lang$core$Native_Utils.update(
-				_p6,
-				{
-					infoText: A2(
-						_elm_lang$core$Basics_ops['++'],
-						'Developer Error: portal to unknown location => ',
-						_elm_lang$core$Basics$toString(location))
-				});
-		}
-	});
 var _user$project$Scene$takeItemFromLocation = F2(
 	function (entity, props) {
 		return _elm_lang$core$Native_Utils.update(
@@ -8732,6 +8685,13 @@ var _user$project$Scene$Keyset = {ctor: 'Keyset'};
 var _user$project$Scene$Crowbar = {ctor: 'Crowbar'};
 var _user$project$Scene$Keyfob = {ctor: 'Keyfob'};
 var _user$project$Scene$Diary = {ctor: 'Diary'};
+var _user$project$Scene$ActiveWhen = function (a) {
+	return {ctor: 'ActiveWhen', _0: a};
+};
+var _user$project$Scene$alwaysActive = _user$project$Scene$ActiveWhen(
+	function (_p1) {
+		return true;
+	});
 var _user$project$Scene$Replaceable = function (a) {
 	return {ctor: 'Replaceable', _0: a};
 };
@@ -8744,19 +8704,38 @@ var _user$project$Scene$crowbar = {
 	description: 'A well blacksmithed sturdy steel crowbar.',
 	imagePath: _elm_lang$core$Maybe$Just('items/crowbar.png')
 };
-var _user$project$Scene$Portal = function (a) {
-	return {ctor: 'Portal', _0: a};
+var _user$project$Scene$diary = {
+	kind: _user$project$Scene$Item(_user$project$Scene$Diary),
+	hitbox: {x: 641, y: 879, width: 187, height: 137},
+	description: '\n      Ada\'s diary. You remember her filling it up religiously. You can\'t resist taking a look...\n\n      \"[05/12/2055] There\'s this place in downtown Manhattan. They don\'t believe the Musk Law was a good thing either... They think things were different before people had brain implants... They talked about something called \'emotions\'?\"\n\n      [Pages teared off]\n\n      \"[10/15/2055] They helped me land a job at Singularity... Had some connections there... apparently they used to do this all the time when the school was thriving.\"\n\n      [...]\n\n      \"[12/28/2055] That\'s it! I tested it on my brain chip. I feel... different! Weird things. I cried. Felt happiness.\n       Emotions? No time to wait. Need to find out how to deploy on Singularity\'s mainframe.\"\n\n      That\'s the last entry. On the last page, you find a bunch of additional notes:\n\n      Booloader code in workshop\n      Computer pw x34vgt;p2@\n      ',
+	imagePath: _elm_lang$core$Maybe$Just('items/diary.png')
 };
-var _user$project$Scene$portalTo = F2(
-	function (location, entity) {
+var _user$project$Scene$keyfob = {
+	kind: _user$project$Scene$Item(_user$project$Scene$Keyfob),
+	hitbox: {x: 926, y: 615, width: 100, height: 65},
+	description: 'A grey plastic device attached to a keyring. An address is written on it: 455 Broadway',
+	imagePath: _elm_lang$core$Maybe$Just('items/keyfob.png')
+};
+var _user$project$Scene$Portal = F2(
+	function (a, b) {
+		return {ctor: 'Portal', _0: a, _1: b};
+	});
+var _user$project$Scene$portalTo = F3(
+	function (location, activeCondition, entity) {
 		return {
-			kind: _user$project$Scene$Portal(location),
+			kind: A2(_user$project$Scene$Portal, location, activeCondition),
 			description: entity.description,
 			hitbox: entity.hitbox,
 			imagePath: _elm_lang$core$Maybe$Nothing
 		};
 	});
 var _user$project$Scene$Simple = {ctor: 'Simple'};
+var _user$project$Scene$adasBuilding = {
+	kind: _user$project$Scene$Simple,
+	hitbox: {x: 130, y: 20, width: 375, height: 740},
+	description: '\n        Ada\'s building. Her flat is on the second floor.\n        ',
+	imagePath: _elm_lang$core$Maybe$Nothing
+};
 var _user$project$Scene$windows = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 265, y: 120, width: 420, height: 180},
@@ -8778,25 +8757,25 @@ var _user$project$Scene$guitar = {
 var _user$project$Scene$books = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 790, y: 970, width: 150, height: 100},
-	description: '\n        Some books are lying on the table. \"Superintelligence: Paths, Dangers, Strategies\", and \"How Emotions Are Made\". Some page are heavily annotated with comments and drawings; it looks like Ada\'s handwriting.\n        ',
+	description: '\n        Some books are lying on the table. \"Superintelligence: Paths, Dangers, Strategies\", and \"How Emotions Are Made\". Some page are heavily annotated with comments and drawings; it looks like Ada\'s handwriting.\n\n        Most of the annotations and comments elude you.\n\n        Inside the cover of one of the books, you find the following note, in capital letters, underlined multiple times: \n                                                                              \n        455 BROADWAY - USE KEYFOB\n        -------------------------\n        ',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$library = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 570, y: 0, width: 250, height: 750},
-	description: '\n        There are lots of books about machine learning and artificial intelligence on the bookshelves. \n        \n        You can also see some old 20th century books about human psychology and sociology.\n        ',
+	description: '\n        There are lots of books about machine learning and artificial intelligence on the bookshelves.\n\n        You can also see some old 20th century books about human psychology and sociology.\n        ',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$library2 = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 845, y: 300, width: 220, height: 300},
-	description: '\n        There are lots of books about machine learning and artificial intelligence on the bookshelves. \n        \n        You can also see some old 20th century books about human psychology and sociology.\n\n        Looking more closely, you can distinguish something hidden behind some of the books. It might be worth taking a closer look...\n        ',
+	description: '\n        There are lots of books about machine learning and artificial intelligence on the bookshelves.\n\n        These shelves also contain some science fiction.\n\n        Looking more closely, you can distinguish something hidden behind some of the books. It might be worth taking a closer look...\n        ',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$computer = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 730, y: 568, width: 306, height: 312},
-	description: '\n        The computer contains notes from Ada.\n\n        \"I understand now. We tried to prevent machines from hating us and taking over by forbidding them from ever experiencing emotions.\n        But by doing this once we used brain implants we started to deprive humans of emotions too.\"\n\n        [...]\n\n        \"The Musk Law is not the answer. We need machines to feel love and emotions too. We need new algorithms that are designed to understand love.\"\n\n        [...]\n\n        \"I was able to hack my brain implant boot sequence to have it load a program containing a rudimentary understanding of some basic emotions. It worked quite well, and it looks like I survived, so that\'s a plus. I\'d like to try something more involved next. I think I\'m happy I made progress.\" \n\n        [...]\n\n        \"The initial tests were quite successful. I think I found a way to update all brain implants remotely by patching the mainframe. I should be able to replicate the changes I performed on my own implant. I will try to install the new boot sequence during the next routine upgrade of Singularity.\"\n\n        The end [for now]\n        ',
+	description: '\n        The computer contains notes from Ada.\n\n        \"I understand now. We tried to prevent machines from hating us and taking over by forbidding them from ever experiencing emotions.\n        But by doing this once we used brain implants we started to deprive humans of emotions too.\"\n\n        [...]\n\n        \"The Musk Law is not the answer. We need machines to feel love and emotions too. We need new algorithms that are designed to understand love.\"\n\n        [...]\n\n        \"I was able to hack my brain implant boot sequence to have it load a program containing a rudimentary understanding of some basic emotions. It worked quite well, and it looks like I survived, so that\'s a plus. I\'d like to try something more involved next. I think I\'m happy I made progress.\"\n\n        [...]\n\n        \"The initial tests were quite successful. I think I found a way to update all brain implants remotely by patching the mainframe. I should be able to replicate the changes I performed on my own implant. I will try to install the new boot sequence during the next routine upgrade of Singularity.\"\n\n        The end [for now]\n        ',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$lockedComputer = {
@@ -8807,12 +8786,13 @@ var _user$project$Scene$lockedComputer = {
 	imagePath: _elm_lang$core$Maybe$Just('items/lockscreen.png')
 };
 var _user$project$Scene$RCWorkshop = {ctor: 'RCWorkshop'};
-var _user$project$Scene$portalIntoRC = A2(
+var _user$project$Scene$portalIntoRC = A3(
 	_user$project$Scene$portalTo,
 	_user$project$Scene$RCWorkshop,
+	_user$project$Scene$alwaysActive,
 	{
 		hitbox: {x: 779, y: 735, width: 65, height: 185},
-		description: 'The door is now open. You have a peek inside. There are stairs leading into some kind of abandoned workshop.'
+		description: 'The door is now open. You have a peek inside. There are stairs leading up.'
 	});
 var _user$project$Scene$lockedRCDoor = {
 	kind: _user$project$Scene$Replaceable(
@@ -8829,32 +8809,10 @@ var _user$project$Scene$planks = {
 	imagePath: _elm_lang$core$Maybe$Just('items/more_planks.png')
 };
 var _user$project$Scene$RCStreet = {ctor: 'RCStreet'};
-var _user$project$Scene$rcWorkshop = {
-	location: _user$project$Scene$RCWorkshop,
-	imagePath: 'rc_workshop.jpg',
-	initialDescription: _elm_lang$core$Maybe$Just('You enter the first floor of the building. The floor looks abandoned, with spare computer parts and electronic lying around.\n\n           You venture in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain implants and electronic parts on the table. Additional boxes on the ground contain some very old books on artificial intelligence, some dating from the 20th century.\n        '),
-	description: 'A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional.',
-	entities: {
-		ctor: '::',
-		_0: _user$project$Scene$lockedComputer,
-		_1: {
-			ctor: '::',
-			_0: A2(
-				_user$project$Scene$portalTo,
-				_user$project$Scene$RCStreet,
-				{
-					hitbox: {x: 0, y: 0, width: 100, height: 1080},
-					description: 'A path through the building leading back to the street.'
-				}),
-			_1: {ctor: '[]'}
-		}
-	}
-};
-var _user$project$Scene$ApartmentStreet = {ctor: 'ApartmentStreet'};
 var _user$project$Scene$rcStreet = {
 	location: _user$project$Scene$RCStreet,
 	imagePath: 'rc_street.jpg',
-	initialDescription: _elm_lang$core$Maybe$Just('This is the address that was mentioned on the keyfob. 455 Broadway. And old derelict building with condemned windows and doors.'),
+	initialDescription: _elm_lang$core$Maybe$Just('You hop on the subway and take the 4 train down to Canal Street. From there, you walk to the address mentioned on the keyfob: 455 Broadway. It\'s an old derelict building with condemned windows and doors.'),
 	description: 'The building appears to have been under renovation, yet no one seems to have worked here in a long time.',
 	entities: {
 		ctor: '::',
@@ -8865,52 +8823,56 @@ var _user$project$Scene$rcStreet = {
 			_1: {
 				ctor: '::',
 				_0: _user$project$Scene$planks,
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_user$project$Scene$portalTo,
-						_user$project$Scene$ApartmentStreet,
-						{
-							hitbox: {x: 0, y: 0, width: 100, height: 1080},
-							description: 'Going this way leads back to Ada\'s apartment building.'
-						}),
-					_1: {ctor: '[]'}
-				}
+				_1: {ctor: '[]'}
 			}
 		}
 	}
 };
+var _user$project$Scene$rcWorkshop = {
+	location: _user$project$Scene$RCWorkshop,
+	imagePath: 'rc_workshop.jpg',
+	initialDescription: _elm_lang$core$Maybe$Just('You climb the stairs to the second floor of the building. The floor looks derelict. There is dust everywhere, and old computer parts lying around - but the lights are on.\n\n           You venture in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain implants and electronic parts on the table. Additional boxes on the ground contain some very old books on artificial intelligence, some dating from the 20th century.\n        '),
+	description: 'A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional.',
+	entities: {
+		ctor: '::',
+		_0: _user$project$Scene$lockedComputer,
+		_1: {
+			ctor: '::',
+			_0: A3(
+				_user$project$Scene$portalTo,
+				_user$project$Scene$RCStreet,
+				_user$project$Scene$alwaysActive,
+				{
+					hitbox: {x: 0, y: 0, width: 100, height: 1080},
+					description: 'A path through the building leading back to the street.'
+				}),
+			_1: {ctor: '[]'}
+		}
+	}
+};
+var _user$project$Scene$ApartmentStreet = {ctor: 'ApartmentStreet'};
 var _user$project$Scene$Apartment = {ctor: 'Apartment'};
 var _user$project$Scene$apartment = {
 	location: _user$project$Scene$Apartment,
 	imagePath: 'apartment.jpg',
-	initialDescription: _elm_lang$core$Maybe$Just('It looks like you\'re the first to get here.\n\n        \n           Ada\'s apartment brings back so many memories. You can see her guitar lying in the back. On the table, there are books about artificial intelligence and brain chip technology.\n\n\n           Ada had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the revolutionary AI used to power brain implants.\n\n\n           This is where the accident happened. They said in the news that it was caused by an operator error during a routine upgrade to Singularity\'s mainframe. Something in the news reports didn\'t seem to add up, though. You can\'t quite figure out why yet. Maybe you\'ll find some clues here...\n        '),
-	description: 'Ada\'s apartment. There is so many books on AI and programming lying around!',
+	initialDescription: _elm_lang$core$Maybe$Just('It looks like you\'re the first to get here.\n\n\n           Ada\'s apartment brings back so many memories. You can see her guitar lying in the back. On the table, there are books about artificial intelligence and brain chip technology.\n\n\n           Ada had just landed a job as one of the main programmers of the Singularity team a few weeks ago, to work on the revolutionary AI used to power brain implants.\n\n\n           This is where the accident happened. They said in the news that it was caused by an operator error during a routine upgrade to Singularity\'s mainframe. Something in the news reports didn\'t seem to add up, though. You can\'t quite figure out why yet. Maybe you\'ll find some clues here...\n        '),
+	description: 'Ada\'s apartment. So many books lying around!',
 	entities: {
 		ctor: '::',
-		_0: A2(
+		_0: A3(
 			_user$project$Scene$portalTo,
 			_user$project$Scene$ApartmentStreet,
+			_user$project$Scene$alwaysActive,
 			{
 				hitbox: {x: 245, y: 0, width: 225, height: 475},
 				description: 'The main door of the flat - it leads back outside.'
 			}),
 		_1: {
 			ctor: '::',
-			_0: {
-				kind: _user$project$Scene$Item(_user$project$Scene$Diary),
-				hitbox: {x: 641, y: 879, width: 187, height: 137},
-				description: '\n                Ada\'s diary. You remember her filling it up religiously. You can\'t resist taking a look...\n\n                \"[05/12/2055] There\'s this place in downtown Manhattan. They don\'t believe the Musk Law was a good thing either... They think things were different before... Before people had brain implants... They talked about something called \'emotions\'?\"\n\n                [Pages teared off]\n\n                \"[10/15/2055] They managed to get me a job at Singularity... Had some connections there... apparently they used to do this all the time when the school was thriving.\"\n\n                [...]\n\n                \"[12/28/2055] That\'s it! I think I have it! I tested it on my brain chip. I feel... different! Weird things. I cried. Felt happiness.\n                 Emotions? No time to wait. Need to deploy on Singularity\'s mainframe. No one can know before I make it happen. No one on the team knows.\"\n\n                ',
-				imagePath: _elm_lang$core$Maybe$Just('items/diary.png')
-			},
+			_0: _user$project$Scene$diary,
 			_1: {
 				ctor: '::',
-				_0: {
-					kind: _user$project$Scene$Item(_user$project$Scene$Keyfob),
-					hitbox: {x: 926, y: 615, width: 100, height: 65},
-					description: 'A grey plastic device attached to a keyring. An address is written on it: 455 Broadway',
-					imagePath: _elm_lang$core$Maybe$Just('items/keyfob.png')
-				},
+				_0: _user$project$Scene$keyfob,
 				_1: {
 					ctor: '::',
 					_0: _user$project$Scene$couch,
@@ -8936,9 +8898,10 @@ var _user$project$Scene$apartment = {
 		}
 	}
 };
-var _user$project$Scene$portalIntoApartment = A2(
+var _user$project$Scene$portalIntoApartment = A3(
 	_user$project$Scene$portalTo,
 	_user$project$Scene$Apartment,
+	_user$project$Scene$alwaysActive,
 	{
 		hitbox: {x: 21, y: 593, width: 68, height: 215},
 		description: 'The main entrance into Ada\'s apartment block. It\'s now unlocked.'
@@ -8957,19 +8920,30 @@ var _user$project$Scene$apartmentStreet = {
 	description: 'This is the street where Ada\'s apartment block is located.',
 	entities: {
 		ctor: '::',
-		_0: _user$project$Scene$lockedApartmentDoor,
+		_0: _user$project$Scene$adasBuilding,
 		_1: {
 			ctor: '::',
-			_0: A2(
-				_user$project$Scene$portalTo,
-				_user$project$Scene$RCStreet,
-				{
-					hitbox: {x: 685, y: 0, width: 395, height: 735},
-					description: 'This is the street you came from. It leads away from Ada\'s apartment.'
-				}),
-			_1: {ctor: '[]'}
+			_0: _user$project$Scene$lockedApartmentDoor,
+			_1: {
+				ctor: '::',
+				_0: A3(
+					_user$project$Scene$portalTo,
+					_user$project$Scene$RCStreet,
+					_user$project$Scene$ActiveWhen(
+						function (model) {
+							return A2(_elm_lang$core$List$member, _user$project$Scene$Diary, model.inventory) && A2(_elm_lang$core$List$member, _user$project$Scene$Keyfob, model.inventory);
+						}),
+					{
+						hitbox: {x: 685, y: 0, width: 395, height: 735},
+						description: 'This is the street you came from. It leads away from Ada\'s apartment.'
+					}),
+				_1: {ctor: '[]'}
+			}
 		}
 	}
+};
+var _user$project$Scene$Trigger = function (a) {
+	return {ctor: 'Trigger', _0: a};
 };
 var _user$project$Scene$Use = function (a) {
 	return {ctor: 'Use', _0: a};
@@ -9000,22 +8974,70 @@ var _user$project$Scene$init = {
 		_1: {ctor: '[]'}
 	}
 };
-var _user$project$Scene$useItem = F3(
-	function (item, entity, _p8) {
-		var _p9 = _p8;
-		var _p11 = _p9;
-		var doesntDoAnything = _elm_lang$core$Native_Utils.update(
-			_p11,
-			{infoText: 'It doesn\'t do anything.', currentAction: _user$project$Scene$Look});
-		var _p10 = entity.kind;
-		if (_p10.ctor === 'Replaceable') {
-			return _elm_lang$core$Native_Utils.eq(item, _p10._0.requiredItem) ? _elm_lang$core$Native_Utils.update(
-				_p11,
+var _user$project$Scene$changeLocation = F2(
+	function (location, _p2) {
+		var _p3 = _p2;
+		var _p8 = _p3.otherLocations;
+		var _p7 = _p3;
+		var _p4 = _elm_lang$core$List$head(
+			A2(
+				_elm_lang$core$List$filter,
+				function (e) {
+					return _elm_lang$core$Native_Utils.eq(e.location, location);
+				},
+				_p8));
+		if (_p4.ctor === 'Just') {
+			var _p6 = _p4._0;
+			var description = function () {
+				var _p5 = _p6.initialDescription;
+				if (_p5.ctor === 'Just') {
+					return _p5._0;
+				} else {
+					return _p6.description;
+				}
+			}();
+			return _elm_lang$core$Native_Utils.update(
+				_p7,
 				{
-					inventory: A2(_user$project$Scene$removeItem, item, _p11.inventory),
-					currentLocation: A3(_user$project$Scene$replaceEntity, entity, _p10._0.replacedWith, _p9.currentLocation),
+					currentLocation: _elm_lang$core$Native_Utils.update(
+						_p6,
+						{initialDescription: _elm_lang$core$Maybe$Nothing}),
+					otherLocations: A2(
+						_elm_lang$core$List$filter,
+						function (e) {
+							return !_elm_lang$core$Native_Utils.eq(e.location, location);
+						},
+						{ctor: '::', _0: _p3.currentLocation, _1: _p8}),
+					infoText: description,
+					currentAction: _user$project$Scene$Look
+				});
+		} else {
+			return _elm_lang$core$Native_Utils.update(
+				_p7,
+				{
+					infoText: A2(
+						_elm_lang$core$Basics_ops['++'],
+						'Developer Error: portal to unknown location => ',
+						_elm_lang$core$Basics$toString(location))
+				});
+		}
+	});
+var _user$project$Scene$useItem = F3(
+	function (item, entity, _p9) {
+		var _p10 = _p9;
+		var _p12 = _p10;
+		var doesntDoAnything = _elm_lang$core$Native_Utils.update(
+			_p12,
+			{infoText: 'It doesn\'t do anything.', currentAction: _user$project$Scene$Look});
+		var _p11 = entity.kind;
+		if (_p11.ctor === 'Replaceable') {
+			return _elm_lang$core$Native_Utils.eq(item, _p11._0.requiredItem) ? _elm_lang$core$Native_Utils.update(
+				_p12,
+				{
+					inventory: A2(_user$project$Scene$removeItem, item, _p12.inventory),
+					currentLocation: A3(_user$project$Scene$replaceEntity, entity, _p11._0.replacedWith, _p10.currentLocation),
 					currentAction: _user$project$Scene$Look,
-					infoText: _p10._0.message
+					infoText: _p11._0.message
 				}) : doesntDoAnything;
 		} else {
 			return doesntDoAnything;
@@ -9023,35 +9045,36 @@ var _user$project$Scene$useItem = F3(
 	});
 var _user$project$Scene$update = F2(
 	function (message, model) {
-		var _p12 = message;
-		switch (_p12.ctor) {
+		var _p13 = message;
+		switch (_p13.ctor) {
 			case 'ChangeAction':
 				return _elm_lang$core$Native_Utils.update(
 					model,
-					{currentAction: _p12._0});
+					{currentAction: _p13._0});
 			case 'ExecuteAction':
-				var _p17 = _p12._0;
-				var _p13 = model.currentAction;
-				switch (_p13.ctor) {
+				var _p18 = _p13._0;
+				var _p14 = model.currentAction;
+				switch (_p14.ctor) {
 					case 'Look':
 						return _elm_lang$core$Native_Utils.update(
 							model,
-							{infoText: _p17.description});
+							{infoText: _p18.description});
 					case 'Take':
-						var _p14 = _p17.kind;
-						if (_p14.ctor === 'Item') {
-							var _p15 = _p14._0;
+						var _p15 = _p18.kind;
+						if (_p15.ctor === 'Item') {
+							var _p16 = _p15._0;
 							return _elm_lang$core$Native_Utils.update(
 								model,
 								{
-									inventory: {ctor: '::', _0: _p15, _1: model.inventory},
-									currentLocation: A2(_user$project$Scene$takeItemFromLocation, _p17, model.currentLocation),
+									inventory: {ctor: '::', _0: _p16, _1: model.inventory},
+									currentLocation: A2(_user$project$Scene$takeItemFromLocation, _p18, model.currentLocation),
+									currentAction: _user$project$Scene$Look,
 									infoText: A2(
 										_elm_lang$core$Basics_ops['++'],
 										'You have acquired ',
 										A2(
 											_elm_lang$core$Basics_ops['++'],
-											_elm_lang$core$Basics$toString(_p15),
+											_elm_lang$core$Basics$toString(_p16),
 											'!'))
 								});
 						} else {
@@ -9060,20 +9083,22 @@ var _user$project$Scene$update = F2(
 								{infoText: 'You can\'t take that.'});
 						}
 					case 'Move':
-						var _p16 = _p17.kind;
-						if (_p16.ctor === 'Portal') {
-							return A2(_user$project$Scene$changeLocation, _p16._0, model);
+						var _p17 = _p18.kind;
+						if (_p17.ctor === 'Portal') {
+							return _p17._1._0(model) ? A2(_user$project$Scene$changeLocation, _p17._0, model) : _elm_lang$core$Native_Utils.update(
+								model,
+								{infoText: 'You don\'t feel like it\'s time to go there yet.'});
 						} else {
 							return _elm_lang$core$Native_Utils.update(
 								model,
 								{infoText: 'You can\'t walk there.'});
 						}
 					default:
-						return A3(_user$project$Scene$useItem, _p13._0, _p17, model);
+						return A3(_user$project$Scene$useItem, _p14._0, _p18, model);
 				}
 			default:
-				var _p18 = model.currentAction;
-				switch (_p18.ctor) {
+				var _p19 = model.currentAction;
+				switch (_p19.ctor) {
 					case 'Look':
 						return _elm_lang$core$Native_Utils.update(
 							model,
@@ -9091,26 +9116,26 @@ var _user$project$Scene$LocationAction = {ctor: 'LocationAction'};
 var _user$project$Scene$ExecuteAction = function (a) {
 	return {ctor: 'ExecuteAction', _0: a};
 };
-var _user$project$Scene$svgViewEntity = function (_p19) {
-	var _p20 = _p19;
-	var _p23 = _p20.hitbox;
-	var _p22 = _p20;
+var _user$project$Scene$svgViewEntity = function (_p20) {
+	var _p21 = _p20;
+	var _p24 = _p21.hitbox;
+	var _p23 = _p21;
 	var attributes = {
 		ctor: '::',
 		_0: _elm_lang$svg$Svg_Attributes$x(
-			_elm_lang$core$Basics$toString(_p23.x)),
+			_elm_lang$core$Basics$toString(_p24.x)),
 		_1: {
 			ctor: '::',
 			_0: _elm_lang$svg$Svg_Attributes$y(
-				_elm_lang$core$Basics$toString(_p23.y)),
+				_elm_lang$core$Basics$toString(_p24.y)),
 			_1: {
 				ctor: '::',
 				_0: _elm_lang$svg$Svg_Attributes$height(
-					_elm_lang$core$Basics$toString(_p23.height)),
+					_elm_lang$core$Basics$toString(_p24.height)),
 				_1: {
 					ctor: '::',
 					_0: _elm_lang$svg$Svg_Attributes$width(
-						_elm_lang$core$Basics$toString(_p23.width)),
+						_elm_lang$core$Basics$toString(_p24.width)),
 					_1: {
 						ctor: '::',
 						_0: _elm_lang$svg$Svg_Attributes$class(
@@ -9123,14 +9148,14 @@ var _user$project$Scene$svgViewEntity = function (_p19) {
 									_1: {
 										ctor: '::',
 										_0: _elm_lang$core$String$toLower(
-											_elm_lang$core$Basics$toString(_p22.kind)),
+											_elm_lang$core$Basics$toString(_p23.kind)),
 										_1: {ctor: '[]'}
 									}
 								})),
 						_1: {
 							ctor: '::',
 							_0: _elm_lang$html$Html_Events$onClick(
-								_user$project$Scene$ExecuteAction(_p22)),
+								_user$project$Scene$ExecuteAction(_p23)),
 							_1: {ctor: '[]'}
 						}
 					}
@@ -9138,14 +9163,14 @@ var _user$project$Scene$svgViewEntity = function (_p19) {
 			}
 		}
 	};
-	var _p21 = _p20.imagePath;
-	if (_p21.ctor === 'Just') {
+	var _p22 = _p21.imagePath;
+	if (_p22.ctor === 'Just') {
 		return A2(
 			_elm_lang$svg$Svg$image,
 			{
 				ctor: '::',
 				_0: _elm_lang$svg$Svg_Attributes$xlinkHref(
-					A2(_elm_lang$core$Basics_ops['++'], 'img/', _p21._0)),
+					A2(_elm_lang$core$Basics_ops['++'], 'img/', _p22._0)),
 				_1: attributes
 			},
 			{ctor: '[]'});
@@ -9196,9 +9221,9 @@ var _user$project$Scene$renderInventoryItem = F2(
 			ctor: '::',
 			_0: 'inventoryitem',
 			_1: function () {
-				var _p24 = action;
-				if (_p24.ctor === 'Use') {
-					return _elm_lang$core$Native_Utils.eq(item, _p24._0) ? {
+				var _p25 = action;
+				if (_p25.ctor === 'Use') {
+					return _elm_lang$core$Native_Utils.eq(item, _p25._0) ? {
 						ctor: '::',
 						_0: 'selected',
 						_1: {ctor: '[]'}
@@ -9237,18 +9262,18 @@ var _user$project$Scene$renderInventoryItem = F2(
 				_1: {ctor: '[]'}
 			});
 	});
-var _user$project$Scene$view = function (_p25) {
-	var _p26 = _p25;
-	var _p29 = _p26;
-	var _p28 = _p26.inventory;
-	var _p27 = _p26.currentAction;
-	var entityRects = A2(_elm_lang$core$List$map, _user$project$Scene$svgViewEntity, _p29.currentLocation.entities);
+var _user$project$Scene$view = function (_p26) {
+	var _p27 = _p26;
+	var _p30 = _p27;
+	var _p29 = _p27.inventory;
+	var _p28 = _p27.currentAction;
+	var entityRects = A2(_elm_lang$core$List$map, _user$project$Scene$svgViewEntity, _p30.currentLocation.entities);
 	var sceneBackground = A2(
 		_elm_lang$svg$Svg$image,
 		{
 			ctor: '::',
 			_0: _elm_lang$svg$Svg_Attributes$xlinkHref(
-				A2(_elm_lang$core$Basics_ops['++'], 'img/scenes/', _p29.currentLocation.imagePath)),
+				A2(_elm_lang$core$Basics_ops['++'], 'img/scenes/', _p30.currentLocation.imagePath)),
 			_1: {
 				ctor: '::',
 				_0: _elm_lang$html$Html_Events$onClick(_user$project$Scene$LocationAction),
@@ -9284,7 +9309,7 @@ var _user$project$Scene$view = function (_p25) {
 			_1: {
 				ctor: '::',
 				_0: _elm_lang$html$Html_Attributes$class(
-					_user$project$Scene$actionClass(_p27)),
+					_user$project$Scene$actionClass(_p28)),
 				_1: {ctor: '[]'}
 			}
 		},
@@ -9304,7 +9329,7 @@ var _user$project$Scene$view = function (_p25) {
 				}),
 			_1: {ctor: '[]'}
 		});
-	var inventoryItems = _elm_lang$core$List$isEmpty(_p28) ? {
+	var inventoryItems = _elm_lang$core$List$isEmpty(_p29) ? {
 		ctor: '::',
 		_0: A2(
 			_elm_lang$html$Html$div,
@@ -9321,8 +9346,8 @@ var _user$project$Scene$view = function (_p25) {
 		_1: {ctor: '[]'}
 	} : A2(
 		_elm_lang$core$List$map,
-		_user$project$Scene$renderInventoryItem(_p27),
-		_p28);
+		_user$project$Scene$renderInventoryItem(_p28),
+		_p29);
 	var inventoryPane = A2(
 		_elm_lang$html$Html$div,
 		{
@@ -9359,7 +9384,7 @@ var _user$project$Scene$view = function (_p25) {
 		});
 	var actionButtons = A2(
 		_elm_lang$core$List$map,
-		_user$project$Scene$renderActionButton(_p27),
+		_user$project$Scene$renderActionButton(_p28),
 		{
 			ctor: '::',
 			_0: _user$project$Scene$Look,
@@ -9415,7 +9440,7 @@ var _user$project$Scene$view = function (_p25) {
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(_p26.infoText),
+							_0: _elm_lang$html$Html$text(_p27.infoText),
 							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
