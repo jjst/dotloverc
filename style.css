@@ -78,11 +78,6 @@ rect.entity {
     fill-opacity: 0;
 }
 
-rect.entity.portal:hover {
-    fill: yellow;
-    fill-opacity: 0.035;
-}
-
 image.entity.item:hover {
     opacity: 0.95;
 }
