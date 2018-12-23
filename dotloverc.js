@@ -9471,7 +9471,7 @@ var _user$project$Scene$Item = function (a) {
 };
 var _user$project$Scene$crowbar = {
 	kind: _user$project$Scene$Item(_user$project$Scene$Crowbar),
-	hitbox: {x: 636, y: (1080 - 79) - 32, width: 66, height: 32},
+	hitbox: {x: 636, y: (1080 - 69) - 32, width: 66, height: 32},
 	description: 'A well blacksmithed sturdy steel crowbar.',
 	imagePath: _elm_lang$core$Maybe$Just('items/crowbar.png')
 };
@@ -9481,11 +9481,11 @@ var _user$project$Scene$diary = {
 	description: '\n      Ada\'s diary. You remember her filling it up religiously. You can\'t resist taking a look...\n\n      \"[05/12/2055] There\'s this place in downtown Manhattan. They don\'t believe the Musk Law was a good thing either... They think things were different before people had brain implants... They talked about something called \'emotions\'?\"\n\n      [Pages teared off]\n\n      \"[10/15/2055] They helped me land a job at Singularity... Had some connections there... apparently they used to do this all the time when the school was thriving.\"\n\n      [...]\n\n      \"[12/28/2055] That\'s it! I tested it on my brain chip. I feel... different! Weird things. I cried. Felt happiness.\n       Emotions? No time to wait. Need to find out how to deploy on Singularity\'s mainframe.\"\n\n      That\'s the last entry. On the last page, you find a bunch of additional notes:\n\n      Booloader code in workshop\n      Computer pw x34vgt;p2@\n      ',
 	imagePath: _elm_lang$core$Maybe$Just('items/diary.png')
 };
-var _user$project$Scene$keyfob = {
+var _user$project$Scene$couch = {
 	kind: _user$project$Scene$Item(_user$project$Scene$Keyfob),
-	hitbox: {x: 926, y: 615, width: 100, height: 65},
-	description: 'A grey plastic device attached to a keyring. An address is written on it: 455 Broadway',
-	imagePath: _elm_lang$core$Maybe$Just('items/keyfob.png')
+	hitbox: {x: 0, y: 720, width: 300, height: 300},
+	description: '\n        You search the couch, lifting the cushions.\n\n        Under one of them, you find a grey plastic device attached to a keyring. An address is written on it: 455 Broadway.\n        ',
+	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$Portal = F2(
 	function (a, b) {
@@ -9513,12 +9513,6 @@ var _user$project$Scene$windows = {
 	description: '\n        The building looks abandoned, but strangely enough the lights at this floor seem to be on.\n        ',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
-var _user$project$Scene$couch = {
-	kind: _user$project$Scene$Simple,
-	hitbox: {x: 0, y: 720, width: 300, height: 300},
-	description: '\n        Nothing on the couch except a bunch of cushions.\n        ',
-	imagePath: _elm_lang$core$Maybe$Nothing
-};
 var _user$project$Scene$guitar = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 460, y: 530, width: 100, height: 220},
@@ -9540,7 +9534,7 @@ var _user$project$Scene$library = {
 var _user$project$Scene$library2 = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 845, y: 300, width: 220, height: 300},
-	description: '\n        There are lots of books about machine learning and artificial intelligence on the bookshelves.\n\n        These shelves also contain some science fiction.\n\n        Looking more closely, you can distinguish something hidden behind some of the books. It might be worth taking a closer look...\n        ',
+	description: '\n        There are lots of books about machine learning and artificial intelligence on the bookshelves.\n\n        These shelves also contain some science fiction.\n        ',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$computer = {
@@ -9643,24 +9637,20 @@ var _user$project$Scene$apartment = {
 			_0: _user$project$Scene$diary,
 			_1: {
 				ctor: '::',
-				_0: _user$project$Scene$keyfob,
+				_0: _user$project$Scene$couch,
 				_1: {
 					ctor: '::',
-					_0: _user$project$Scene$couch,
+					_0: _user$project$Scene$library,
 					_1: {
 						ctor: '::',
-						_0: _user$project$Scene$library,
+						_0: _user$project$Scene$library2,
 						_1: {
 							ctor: '::',
-							_0: _user$project$Scene$library2,
+							_0: _user$project$Scene$guitar,
 							_1: {
 								ctor: '::',
-								_0: _user$project$Scene$guitar,
-								_1: {
-									ctor: '::',
-									_0: _user$project$Scene$books,
-									_1: {ctor: '[]'}
-								}
+								_0: _user$project$Scene$books,
+								_1: {ctor: '[]'}
 							}
 						}
 					}
