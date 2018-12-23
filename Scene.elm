@@ -9,8 +9,8 @@ import Svg exposing (Svg, svg, image, g, rect)
 import Svg.Attributes as SA
 import Svg.Attributes exposing (..)
 
-init = {
-   currentAction = Look
+init = 
+   { currentAction = Look
    , currentLocation = apartmentStreet
    , otherLocations = [apartment, rcStreet, rcWorkshop]
    , infoText =
@@ -46,9 +46,14 @@ type InventoryItem
     | Crowbar
     | Keyset
 
+type alias ActiveCondition = Model -> Bool
+
+alwaysActive: ActiveCondition
+alwaysActive _ = True
+
 type EntityKind
     = Simple
-    | Portal Location
+    | Portal Location ActiveCondition
     | Item InventoryItem
     | Replaceable
         { replacedWith: Entity
@@ -63,9 +68,9 @@ type alias Entity =
     , kind : EntityKind
     }
 
-portalTo : Location -> { description: String, hitbox: Rect } -> Entity
-portalTo location entity =
-    { kind = Portal location
+portalTo : Location -> ActiveCondition -> { description: String, hitbox: Rect } -> Entity
+portalTo location activeCondition entity =
+    { kind = Portal location activeCondition
     , description = entity.description
     , hitbox = entity.hitbox
     , imagePath = Nothing
@@ -97,6 +102,12 @@ type alias Model =
     , otherLocations: List LocationProperties
     , infoText : String
     , inventory: List InventoryItem
+    }
+
+-- Could potentially use this to model generic triggers...
+type Trigger = Trigger 
+    { condition: Model -> Bool
+    , update: Model -> Model
     }
 
 changeLocation : Location -> Model -> Model
@@ -164,37 +175,12 @@ apartment =
     , description = "Ada's apartment. There is so many books on AI and programming lying around!"
     , entities =
         [
-            portalTo ApartmentStreet
+            portalTo ApartmentStreet alwaysActive
                 { hitbox = { x = 245, y = 0, width = 225, height = 475 }
                 , description = "The main door of the flat - it leads back outside."
                 }
-
-            , { kind = Item Diary
-            , hitbox = { x = 641, y = 879, width = 187, height = 137 }
-            , description =
-                """
-                Ada's diary. You remember her filling it up religiously. You can't resist taking a look...
-
-                "[05/12/2055] There's this place in downtown Manhattan. They don't believe the Musk Law was a good thing either... They think things were different before... Before people had brain implants... They talked about something called 'emotions'?"
-
-                [Pages teared off]
-
-                "[10/15/2055] They managed to get me a job at Singularity... Had some connections there... apparently they used to do this all the time when the school was thriving."
-
-                [...]
-
-                "[12/28/2055] That's it! I think I have it! I tested it on my brain chip. I feel... different! Weird things. I cried. Felt happiness.
-                 Emotions? No time to wait. Need to deploy on Singularity's mainframe. No one can know before I make it happen. No one on the team knows."
-
-                """
-            , imagePath = Just "items/diary.png"
-            }
-
-            , { kind = Item Keyfob
-            , hitbox = { x = 926, y = 615, width = 100, height = 65 }
-            , description = "A grey plastic device attached to a keyring. An address is written on it: 455 Broadway"
-            , imagePath = Just "items/keyfob.png"
-            }
+            , diary
+            , keyfob
             , couch
             , library
             , library2
@@ -214,7 +200,7 @@ lockedApartmentDoor =
     , imagePath = Nothing
     }
 
-portalIntoApartment = portalTo Apartment
+portalIntoApartment = portalTo Apartment alwaysActive
     { hitbox = { x = 21, y = 593, width = 68, height = 215 }
     , description = "The main entrance into Ada's apartment block. It's now unlocked."
     }
@@ -226,7 +212,7 @@ apartmentStreet =
     , description = "This is the street where Ada's apartment block is located."
     , entities =
         [ lockedApartmentDoor
-        , portalTo RCStreet
+        , portalTo RCStreet alwaysActive
             { hitbox = { x = 685, y = 0, width = 395, height = 735 }
             , description = "This is the street you came from. It leads away from Ada's apartment."
             }
@@ -257,7 +243,7 @@ lockedRCDoor =
     }
 
 portalIntoRC =
-    portalTo RCWorkshop
+    portalTo RCWorkshop alwaysActive
         { hitbox = { x = 779, y = 735, width = 65, height = 185 }
         , description = "The door is now open. You have a peek inside. There are stairs leading into some kind of abandoned workshop."
         }
@@ -289,12 +275,42 @@ rcStreet =
         [ crowbar
         , windows
         , planks
-        , portalTo ApartmentStreet
+        , portalTo ApartmentStreet alwaysActive
             { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
             , description = "Going this way leads back to Ada's apartment building."
             }
         ]
     }
+
+diary = 
+  { kind = Item Diary
+  , hitbox = { x = 641, y = 879, width = 187, height = 137 }
+  , description =
+      """
+      Ada's diary. You remember her filling it up religiously. You can't resist taking a look...
+
+      "[05/12/2055] There's this place in downtown Manhattan. They don't believe the Musk Law was a good thing either... They think things were different before... Before people had brain implants... They talked about something called 'emotions'?"
+
+      [Pages teared off]
+
+      "[10/15/2055] They managed to get me a job at Singularity... Had some connections there... apparently they used to do this all the time when the school was thriving."
+
+      [...]
+
+      "[12/28/2055] That's it! I think I have it! I tested it on my brain chip. I feel... different! Weird things. I cried. Felt happiness.
+       Emotions? No time to wait. Need to deploy on Singularity's mainframe. No one can know before I make it happen. No one on the team knows."
+
+      """
+  , imagePath = Just "items/diary.png"
+  }
+
+keyfob = 
+  { kind = Item Keyfob
+  , hitbox = { x = 926, y = 615, width = 100, height = 65 }
+  , description = "A grey plastic device attached to a keyring. An address is written on it: 455 Broadway"
+  , imagePath = Just "items/keyfob.png"
+  }
+
 
 couch =
     { kind = Simple
@@ -401,7 +417,7 @@ rcWorkshop =
         """
     , description = "A large shelf of well organized electronic parts is situated against the left wall. On a desk there is a computer that appears still functional."
     , entities = [ lockedComputer
-                 , portalTo RCStreet
+                 , portalTo RCStreet alwaysActive
                      { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
                      , description = "A path through the building leading back to the street."
                      }
@@ -445,8 +461,11 @@ update message model =
 
                 Move ->
                     case entity.kind of
-                        Portal location ->
-                            changeLocation location model
+                        Portal location activeCondition ->
+                            if activeCondition model then
+                                changeLocation location model
+                            else
+                                { model | infoText = "You can't walk there." }
                         _ ->
                             { model | infoText = "You can't walk there." }
 
