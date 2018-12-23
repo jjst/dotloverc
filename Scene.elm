@@ -359,7 +359,7 @@ library2 =
         """
         There are lots of books about machine learning and artificial intelligence on the bookshelves.
 
-        You can also see some old 20th century books about human psychology and sociology.
+        These shelves also contain some science fiction.
 
         Looking more closely, you can distinguish something hidden behind some of the books. It might be worth taking a closer look...
         """
