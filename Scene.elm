@@ -164,7 +164,6 @@ apartment =
                 , description = "The main door of the flat - it leads back outside."
                 }
             , diary
-            , keyfob
             , couch
             , library
             , library2
@@ -299,20 +298,15 @@ diary =
   , imagePath = Just "items/diary.png"
   }
 
-keyfob =
-  { kind = Item Keyfob
-  , hitbox = { x = 926, y = 615, width = 100, height = 65 }
-  , description = "A grey plastic device attached to a keyring. An address is written on it: 455 Broadway"
-  , imagePath = Just "items/keyfob.png"
-  }
-
 
 couch =
-    { kind = Simple
+    { kind = Item Keyfob
     , hitbox = { x = 0, y = 720, width = 300, height = 300 }
     , description =
         """
-        Nothing on the couch except a bunch of cushions.
+        You search the couch, lifting the cushions.
+
+        Under one of them, you find a grey plastic device attached to a keyring. An address is written on it: 455 Broadway.
         """
     , imagePath = Nothing
     }
@@ -364,8 +358,6 @@ library2 =
         There are lots of books about machine learning and artificial intelligence on the bookshelves.
 
         These shelves also contain some science fiction.
-
-        Looking more closely, you can distinguish something hidden behind some of the books. It might be worth taking a closer look...
         """
     , imagePath = Nothing
     }
