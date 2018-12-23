@@ -174,7 +174,7 @@ apartment =
 
            This is where the accident happened. They said in the news that it was caused by an operator error during a routine upgrade to Singularity's mainframe. Something in the news reports didn't seem to add up, though. You can't quite figure out why yet. Maybe you'll find some clues here...
         """
-    , description = "Ada's apartment. There is so many books on AI and programming lying around!"
+    , description = "Ada's apartment. So many books lying around!"
     , entities =
         [
             portalTo ApartmentStreet alwaysActive
@@ -213,12 +213,23 @@ apartmentStreet =
     , initialDescription = Just "Back into the street where Ada's apartment is."
     , description = "This is the street where Ada's apartment block is located."
     , entities =
-        [ lockedApartmentDoor
+        [ adasBuilding
+        , lockedApartmentDoor
         , portalTo RCStreet (ActiveWhen (\model -> List.member Diary model.inventory && List.member Keyfob model.inventory))
             { hitbox = { x = 685, y = 0, width = 395, height = 735 }
             , description = "This is the street you came from. It leads away from Ada's apartment."
             }
         ]
+    }
+
+adasBuilding =
+    { kind = Simple
+    , hitbox = { x = 130, y = 20, width = 375, height = 740 }
+    , description =
+        """
+        Ada's building. Her flat is on the second floor.
+        """
+    , imagePath = Nothing
     }
 
 planks =
@@ -247,7 +258,7 @@ lockedRCDoor =
 portalIntoRC =
     portalTo RCWorkshop alwaysActive
         { hitbox = { x = 779, y = 735, width = 65, height = 185 }
-        , description = "The door is now open. You have a peek inside. There are stairs leading into some kind of abandoned workshop."
+        , description = "The door is now open. You have a peek inside. There are stairs leading up."
         }
 
 crowbar =
@@ -271,7 +282,7 @@ rcStreet =
     { location = RCStreet
     , imagePath = "rc_street.jpg"
     , initialDescription =
-        Just """This is the address that was mentioned on the keyfob. 455 Broadway. And old derelict building with condemned windows and doors."""
+        Just """You hop on the subway and take the 4 train down to Canal Street. From there, you walk to the address mentioned on the keyfob: 455 Broadway. It's an old derelict building with condemned windows and doors."""
     , description = "The building appears to have been under renovation, yet no one seems to have worked here in a long time."
     , entities =
         [ crowbar
@@ -287,17 +298,21 @@ diary =
       """
       Ada's diary. You remember her filling it up religiously. You can't resist taking a look...
 
-      "[05/12/2055] There's this place in downtown Manhattan. They don't believe the Musk Law was a good thing either... They think things were different before... Before people had brain implants... They talked about something called 'emotions'?"
+      "[05/12/2055] There's this place in downtown Manhattan. They don't believe the Musk Law was a good thing either... They think things were different before people had brain implants... They talked about something called 'emotions'?"
 
       [Pages teared off]
 
-      "[10/15/2055] They managed to get me a job at Singularity... Had some connections there... apparently they used to do this all the time when the school was thriving."
+      "[10/15/2055] They helped me land a job at Singularity... Had some connections there... apparently they used to do this all the time when the school was thriving."
 
       [...]
 
-      "[12/28/2055] That's it! I think I have it! I tested it on my brain chip. I feel... different! Weird things. I cried. Felt happiness.
-       Emotions? No time to wait. Need to deploy on Singularity's mainframe. No one can know before I make it happen. No one on the team knows."
+      "[12/28/2055] That's it! I tested it on my brain chip. I feel... different! Weird things. I cried. Felt happiness.
+       Emotions? No time to wait. Need to find out how to deploy on Singularity's mainframe."
 
+      That's the last entry. On the last page, you find a bunch of additional notes:
+
+      Booloader code in workshop
+      Computer pw x34vgt;p2@
       """
   , imagePath = Just "items/diary.png"
   }
@@ -336,6 +351,13 @@ books =
     , description =
         """
         Some books are lying on the table. "Superintelligence: Paths, Dangers, Strategies", and "How Emotions Are Made". Some page are heavily annotated with comments and drawings; it looks like Ada's handwriting.
+
+        Most of the annotations and comments elude you.
+
+        Inside the cover of one of the books, you find the following note, in capital letters, underlined multiple times: 
+                                                                              
+        455 BROADWAY - USE KEYFOB
+        -------------------------
         """
     , imagePath = Nothing
     }
@@ -404,12 +426,11 @@ lockedComputer =
     , imagePath = Just "items/lockscreen.png"
     }
 
--- Simple: Computer
 rcWorkshop =
     { location = RCWorkshop
     , imagePath = "rc_workshop.jpg"
     , initialDescription = Just
-        """You enter the first floor of the building. The floor looks abandoned, with spare computer parts and electronic lying around.
+        """You climb the stairs to the second floor of the building. The floor looks derelict. There is dust everywhere, and old computer parts lying around - but the lights are on.
 
            You venture in one of the rooms and discover a computer that appears still functional. There is a box full of prototype brain implants and electronic parts on the table. Additional boxes on the ground contain some very old books on artificial intelligence, some dating from the 20th century.
         """
@@ -452,6 +473,7 @@ update message model =
                             { model
                                 | inventory = (item :: model.inventory)
                                 , currentLocation = takeItemFromLocation entity model.currentLocation
+                                , currentAction = Look
                                 , infoText = ("You have acquired " ++ (toString item) ++ "!")
                             }
                         _ ->
