@@ -9,7 +9,7 @@ import Svg exposing (Svg, svg, image, g, rect)
 import Svg.Attributes as SA
 import Svg.Attributes exposing (..)
 
-init = 
+init =
    { currentAction = Look
    , currentLocation = apartmentStreet
    , otherLocations = [apartment, rcStreet, rcWorkshop]
@@ -46,10 +46,11 @@ type InventoryItem
     | Crowbar
     | Keyset
 
-type alias ActiveCondition = Model -> Bool
+type ActiveCondition =
+  ActiveWhen (Model -> Bool)
 
 alwaysActive: ActiveCondition
-alwaysActive _ = True
+alwaysActive = ActiveWhen (\_ -> True)
 
 type EntityKind
     = Simple
@@ -105,7 +106,7 @@ type alias Model =
     }
 
 -- Could potentially use this to model generic triggers...
-type Trigger = Trigger 
+type Trigger = Trigger
     { condition: Model -> Bool
     , update: Model -> Model
     }
@@ -123,6 +124,7 @@ changeLocation location ({currentLocation, otherLocations} as model) =
                 | currentLocation = { nextLocation | initialDescription = Nothing }
                 , otherLocations = (currentLocation :: otherLocations) |> List.filter (\e -> e.location /= location)
                 , infoText = description
+                , currentAction = Look
             }
         Nothing -> { model | infoText = "Developer Error: portal to unknown location => " ++ (toString location) }
 
@@ -163,7 +165,7 @@ apartment =
     , initialDescription = Just
         """It looks like you're the first to get here.
 
-        
+
            Ada's apartment brings back so many memories. You can see her guitar lying in the back. On the table, there are books about artificial intelligence and brain chip technology.
 
 
@@ -212,7 +214,7 @@ apartmentStreet =
     , description = "This is the street where Ada's apartment block is located."
     , entities =
         [ lockedApartmentDoor
-        , portalTo RCStreet alwaysActive
+        , portalTo RCStreet (ActiveWhen (\model -> List.member Diary model.inventory && List.member Keyfob model.inventory))
             { hitbox = { x = 685, y = 0, width = 395, height = 735 }
             , description = "This is the street you came from. It leads away from Ada's apartment."
             }
@@ -248,7 +250,7 @@ portalIntoRC =
         , description = "The door is now open. You have a peek inside. There are stairs leading into some kind of abandoned workshop."
         }
 
-crowbar = 
+crowbar =
     { kind = Item Crowbar
     , hitbox = { x = 636, y = 1080-79-32, width = 66, height = 32 }
     , description = "A well blacksmithed sturdy steel crowbar."
@@ -275,14 +277,10 @@ rcStreet =
         [ crowbar
         , windows
         , planks
-        , portalTo ApartmentStreet alwaysActive
-            { hitbox = { x = 0, y = 0, width = 100, height = 1080 }
-            , description = "Going this way leads back to Ada's apartment building."
-            }
         ]
     }
 
-diary = 
+diary =
   { kind = Item Diary
   , hitbox = { x = 641, y = 879, width = 187, height = 137 }
   , description =
@@ -304,7 +302,7 @@ diary =
   , imagePath = Just "items/diary.png"
   }
 
-keyfob = 
+keyfob =
   { kind = Item Keyfob
   , hitbox = { x = 926, y = 615, width = 100, height = 65 }
   , description = "A grey plastic device attached to a keyring. An address is written on it: 455 Broadway"
@@ -347,8 +345,8 @@ library =
     , hitbox = { x = 570, y = 0, width = 250, height = 750 }
     , description =
         """
-        There are lots of books about machine learning and artificial intelligence on the bookshelves. 
-        
+        There are lots of books about machine learning and artificial intelligence on the bookshelves.
+
         You can also see some old 20th century books about human psychology and sociology.
         """
     , imagePath = Nothing
@@ -359,8 +357,8 @@ library2 =
     , hitbox = { x = 845, y = 300, width = 220, height = 300 }
     , description =
         """
-        There are lots of books about machine learning and artificial intelligence on the bookshelves. 
-        
+        There are lots of books about machine learning and artificial intelligence on the bookshelves.
+
         You can also see some old 20th century books about human psychology and sociology.
 
         Looking more closely, you can distinguish something hidden behind some of the books. It might be worth taking a closer look...
@@ -384,7 +382,7 @@ computer =
 
         [...]
 
-        "I was able to hack my brain implant boot sequence to have it load a program containing a rudimentary understanding of some basic emotions. It worked quite well, and it looks like I survived, so that's a plus. I'd like to try something more involved next. I think I'm happy I made progress." 
+        "I was able to hack my brain implant boot sequence to have it load a program containing a rudimentary understanding of some basic emotions. It worked quite well, and it looks like I survived, so that's a plus. I'd like to try something more involved next. I think I'm happy I made progress."
 
         [...]
 
@@ -461,11 +459,11 @@ update message model =
 
                 Move ->
                     case entity.kind of
-                        Portal location activeCondition ->
-                            if activeCondition model then
+                        Portal location (ActiveWhen isPortalActive) ->
+                            if isPortalActive model then
                                 changeLocation location model
                             else
-                                { model | infoText = "You can't walk there." }
+                                { model | infoText = "You don't feel like it's time to go there yet." }
                         _ ->
                             { model | infoText = "You can't walk there." }
 
