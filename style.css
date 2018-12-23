@@ -34,6 +34,10 @@ div#actionbuttons {
     text-align: center;
 }
 
+button::first-letter {
+    text-decoration:underline
+}
+
 .menutitle {
     color: #EEEEEE;
     font-family: 'Oswald', sans-serif;

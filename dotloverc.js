@@ -3746,6 +3746,203 @@ var _elm_lang$core$Result$fromMaybe = F2(
 		}
 	});
 
+var _elm_lang$core$Task$onError = _elm_lang$core$Native_Scheduler.onError;
+var _elm_lang$core$Task$andThen = _elm_lang$core$Native_Scheduler.andThen;
+var _elm_lang$core$Task$spawnCmd = F2(
+	function (router, _p0) {
+		var _p1 = _p0;
+		return _elm_lang$core$Native_Scheduler.spawn(
+			A2(
+				_elm_lang$core$Task$andThen,
+				_elm_lang$core$Platform$sendToApp(router),
+				_p1._0));
+	});
+var _elm_lang$core$Task$fail = _elm_lang$core$Native_Scheduler.fail;
+var _elm_lang$core$Task$mapError = F2(
+	function (convert, task) {
+		return A2(
+			_elm_lang$core$Task$onError,
+			function (_p2) {
+				return _elm_lang$core$Task$fail(
+					convert(_p2));
+			},
+			task);
+	});
+var _elm_lang$core$Task$succeed = _elm_lang$core$Native_Scheduler.succeed;
+var _elm_lang$core$Task$map = F2(
+	function (func, taskA) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return _elm_lang$core$Task$succeed(
+					func(a));
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$map2 = F3(
+	function (func, taskA, taskB) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (b) {
+						return _elm_lang$core$Task$succeed(
+							A2(func, a, b));
+					},
+					taskB);
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$map3 = F4(
+	function (func, taskA, taskB, taskC) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (b) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (c) {
+								return _elm_lang$core$Task$succeed(
+									A3(func, a, b, c));
+							},
+							taskC);
+					},
+					taskB);
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$map4 = F5(
+	function (func, taskA, taskB, taskC, taskD) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (b) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (c) {
+								return A2(
+									_elm_lang$core$Task$andThen,
+									function (d) {
+										return _elm_lang$core$Task$succeed(
+											A4(func, a, b, c, d));
+									},
+									taskD);
+							},
+							taskC);
+					},
+					taskB);
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$map5 = F6(
+	function (func, taskA, taskB, taskC, taskD, taskE) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (a) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (b) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (c) {
+								return A2(
+									_elm_lang$core$Task$andThen,
+									function (d) {
+										return A2(
+											_elm_lang$core$Task$andThen,
+											function (e) {
+												return _elm_lang$core$Task$succeed(
+													A5(func, a, b, c, d, e));
+											},
+											taskE);
+									},
+									taskD);
+							},
+							taskC);
+					},
+					taskB);
+			},
+			taskA);
+	});
+var _elm_lang$core$Task$sequence = function (tasks) {
+	var _p3 = tasks;
+	if (_p3.ctor === '[]') {
+		return _elm_lang$core$Task$succeed(
+			{ctor: '[]'});
+	} else {
+		return A3(
+			_elm_lang$core$Task$map2,
+			F2(
+				function (x, y) {
+					return {ctor: '::', _0: x, _1: y};
+				}),
+			_p3._0,
+			_elm_lang$core$Task$sequence(_p3._1));
+	}
+};
+var _elm_lang$core$Task$onEffects = F3(
+	function (router, commands, state) {
+		return A2(
+			_elm_lang$core$Task$map,
+			function (_p4) {
+				return {ctor: '_Tuple0'};
+			},
+			_elm_lang$core$Task$sequence(
+				A2(
+					_elm_lang$core$List$map,
+					_elm_lang$core$Task$spawnCmd(router),
+					commands)));
+	});
+var _elm_lang$core$Task$init = _elm_lang$core$Task$succeed(
+	{ctor: '_Tuple0'});
+var _elm_lang$core$Task$onSelfMsg = F3(
+	function (_p7, _p6, _p5) {
+		return _elm_lang$core$Task$succeed(
+			{ctor: '_Tuple0'});
+	});
+var _elm_lang$core$Task$command = _elm_lang$core$Native_Platform.leaf('Task');
+var _elm_lang$core$Task$Perform = function (a) {
+	return {ctor: 'Perform', _0: a};
+};
+var _elm_lang$core$Task$perform = F2(
+	function (toMessage, task) {
+		return _elm_lang$core$Task$command(
+			_elm_lang$core$Task$Perform(
+				A2(_elm_lang$core$Task$map, toMessage, task)));
+	});
+var _elm_lang$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return _elm_lang$core$Task$command(
+			_elm_lang$core$Task$Perform(
+				A2(
+					_elm_lang$core$Task$onError,
+					function (_p8) {
+						return _elm_lang$core$Task$succeed(
+							resultToMessage(
+								_elm_lang$core$Result$Err(_p8)));
+					},
+					A2(
+						_elm_lang$core$Task$andThen,
+						function (_p9) {
+							return _elm_lang$core$Task$succeed(
+								resultToMessage(
+									_elm_lang$core$Result$Ok(_p9)));
+						},
+						task))));
+	});
+var _elm_lang$core$Task$cmdMap = F2(
+	function (tagger, _p10) {
+		var _p11 = _p10;
+		return _elm_lang$core$Task$Perform(
+			A2(_elm_lang$core$Task$map, tagger, _p11._0));
+	});
+_elm_lang$core$Native_Platform.effectManagers['Task'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Task$init, onEffects: _elm_lang$core$Task$onEffects, onSelfMsg: _elm_lang$core$Task$onSelfMsg, tag: 'cmd', cmdMap: _elm_lang$core$Task$cmdMap};
+
 //import Native.Utils //
 
 var _elm_lang$core$Native_Debug = function() {
@@ -5077,6 +5274,221 @@ var _elm_lang$core$Dict$diff = F2(
 			t2);
 	});
 
+//import Native.Scheduler //
+
+var _elm_lang$core$Native_Time = function() {
+
+var now = _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+{
+	callback(_elm_lang$core$Native_Scheduler.succeed(Date.now()));
+});
+
+function setInterval_(interval, task)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		var id = setInterval(function() {
+			_elm_lang$core$Native_Scheduler.rawSpawn(task);
+		}, interval);
+
+		return function() { clearInterval(id); };
+	});
+}
+
+return {
+	now: now,
+	setInterval_: F2(setInterval_)
+};
+
+}();
+var _elm_lang$core$Time$setInterval = _elm_lang$core$Native_Time.setInterval_;
+var _elm_lang$core$Time$spawnHelp = F3(
+	function (router, intervals, processes) {
+		var _p0 = intervals;
+		if (_p0.ctor === '[]') {
+			return _elm_lang$core$Task$succeed(processes);
+		} else {
+			var _p1 = _p0._0;
+			var spawnRest = function (id) {
+				return A3(
+					_elm_lang$core$Time$spawnHelp,
+					router,
+					_p0._1,
+					A3(_elm_lang$core$Dict$insert, _p1, id, processes));
+			};
+			var spawnTimer = _elm_lang$core$Native_Scheduler.spawn(
+				A2(
+					_elm_lang$core$Time$setInterval,
+					_p1,
+					A2(_elm_lang$core$Platform$sendToSelf, router, _p1)));
+			return A2(_elm_lang$core$Task$andThen, spawnRest, spawnTimer);
+		}
+	});
+var _elm_lang$core$Time$addMySub = F2(
+	function (_p2, state) {
+		var _p3 = _p2;
+		var _p6 = _p3._1;
+		var _p5 = _p3._0;
+		var _p4 = A2(_elm_lang$core$Dict$get, _p5, state);
+		if (_p4.ctor === 'Nothing') {
+			return A3(
+				_elm_lang$core$Dict$insert,
+				_p5,
+				{
+					ctor: '::',
+					_0: _p6,
+					_1: {ctor: '[]'}
+				},
+				state);
+		} else {
+			return A3(
+				_elm_lang$core$Dict$insert,
+				_p5,
+				{ctor: '::', _0: _p6, _1: _p4._0},
+				state);
+		}
+	});
+var _elm_lang$core$Time$inMilliseconds = function (t) {
+	return t;
+};
+var _elm_lang$core$Time$millisecond = 1;
+var _elm_lang$core$Time$second = 1000 * _elm_lang$core$Time$millisecond;
+var _elm_lang$core$Time$minute = 60 * _elm_lang$core$Time$second;
+var _elm_lang$core$Time$hour = 60 * _elm_lang$core$Time$minute;
+var _elm_lang$core$Time$inHours = function (t) {
+	return t / _elm_lang$core$Time$hour;
+};
+var _elm_lang$core$Time$inMinutes = function (t) {
+	return t / _elm_lang$core$Time$minute;
+};
+var _elm_lang$core$Time$inSeconds = function (t) {
+	return t / _elm_lang$core$Time$second;
+};
+var _elm_lang$core$Time$now = _elm_lang$core$Native_Time.now;
+var _elm_lang$core$Time$onSelfMsg = F3(
+	function (router, interval, state) {
+		var _p7 = A2(_elm_lang$core$Dict$get, interval, state.taggers);
+		if (_p7.ctor === 'Nothing') {
+			return _elm_lang$core$Task$succeed(state);
+		} else {
+			var tellTaggers = function (time) {
+				return _elm_lang$core$Task$sequence(
+					A2(
+						_elm_lang$core$List$map,
+						function (tagger) {
+							return A2(
+								_elm_lang$core$Platform$sendToApp,
+								router,
+								tagger(time));
+						},
+						_p7._0));
+			};
+			return A2(
+				_elm_lang$core$Task$andThen,
+				function (_p8) {
+					return _elm_lang$core$Task$succeed(state);
+				},
+				A2(_elm_lang$core$Task$andThen, tellTaggers, _elm_lang$core$Time$now));
+		}
+	});
+var _elm_lang$core$Time$subscription = _elm_lang$core$Native_Platform.leaf('Time');
+var _elm_lang$core$Time$State = F2(
+	function (a, b) {
+		return {taggers: a, processes: b};
+	});
+var _elm_lang$core$Time$init = _elm_lang$core$Task$succeed(
+	A2(_elm_lang$core$Time$State, _elm_lang$core$Dict$empty, _elm_lang$core$Dict$empty));
+var _elm_lang$core$Time$onEffects = F3(
+	function (router, subs, _p9) {
+		var _p10 = _p9;
+		var rightStep = F3(
+			function (_p12, id, _p11) {
+				var _p13 = _p11;
+				return {
+					ctor: '_Tuple3',
+					_0: _p13._0,
+					_1: _p13._1,
+					_2: A2(
+						_elm_lang$core$Task$andThen,
+						function (_p14) {
+							return _p13._2;
+						},
+						_elm_lang$core$Native_Scheduler.kill(id))
+				};
+			});
+		var bothStep = F4(
+			function (interval, taggers, id, _p15) {
+				var _p16 = _p15;
+				return {
+					ctor: '_Tuple3',
+					_0: _p16._0,
+					_1: A3(_elm_lang$core$Dict$insert, interval, id, _p16._1),
+					_2: _p16._2
+				};
+			});
+		var leftStep = F3(
+			function (interval, taggers, _p17) {
+				var _p18 = _p17;
+				return {
+					ctor: '_Tuple3',
+					_0: {ctor: '::', _0: interval, _1: _p18._0},
+					_1: _p18._1,
+					_2: _p18._2
+				};
+			});
+		var newTaggers = A3(_elm_lang$core$List$foldl, _elm_lang$core$Time$addMySub, _elm_lang$core$Dict$empty, subs);
+		var _p19 = A6(
+			_elm_lang$core$Dict$merge,
+			leftStep,
+			bothStep,
+			rightStep,
+			newTaggers,
+			_p10.processes,
+			{
+				ctor: '_Tuple3',
+				_0: {ctor: '[]'},
+				_1: _elm_lang$core$Dict$empty,
+				_2: _elm_lang$core$Task$succeed(
+					{ctor: '_Tuple0'})
+			});
+		var spawnList = _p19._0;
+		var existingDict = _p19._1;
+		var killTask = _p19._2;
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (newProcesses) {
+				return _elm_lang$core$Task$succeed(
+					A2(_elm_lang$core$Time$State, newTaggers, newProcesses));
+			},
+			A2(
+				_elm_lang$core$Task$andThen,
+				function (_p20) {
+					return A3(_elm_lang$core$Time$spawnHelp, router, spawnList, existingDict);
+				},
+				killTask));
+	});
+var _elm_lang$core$Time$Every = F2(
+	function (a, b) {
+		return {ctor: 'Every', _0: a, _1: b};
+	});
+var _elm_lang$core$Time$every = F2(
+	function (interval, tagger) {
+		return _elm_lang$core$Time$subscription(
+			A2(_elm_lang$core$Time$Every, interval, tagger));
+	});
+var _elm_lang$core$Time$subMap = F2(
+	function (f, _p21) {
+		var _p22 = _p21;
+		return A2(
+			_elm_lang$core$Time$Every,
+			_p22._0,
+			function (_p23) {
+				return f(
+					_p22._1(_p23));
+			});
+	});
+_elm_lang$core$Native_Platform.effectManagers['Time'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Time$init, onEffects: _elm_lang$core$Time$onEffects, onSelfMsg: _elm_lang$core$Time$onSelfMsg, tag: 'sub', subMap: _elm_lang$core$Time$subMap};
+
 var _elm_lang$core$Debug$crash = _elm_lang$core$Native_Debug.crash;
 var _elm_lang$core$Debug$log = _elm_lang$core$Native_Debug.log;
 
@@ -5730,6 +6142,10 @@ var _elm_lang$core$Json_Decode$bool = _elm_lang$core$Native_Json.decodePrimitive
 var _elm_lang$core$Json_Decode$string = _elm_lang$core$Native_Json.decodePrimitive('string');
 var _elm_lang$core$Json_Decode$Decoder = {ctor: 'Decoder'};
 
+var _elm_lang$core$Process$kill = _elm_lang$core$Native_Scheduler.kill;
+var _elm_lang$core$Process$sleep = _elm_lang$core$Native_Scheduler.sleep;
+var _elm_lang$core$Process$spawn = _elm_lang$core$Native_Scheduler.spawn;
+
 var _elm_lang$core$Tuple$mapSecond = F2(
 	function (func, _p0) {
 		var _p1 = _p0;
@@ -5756,6 +6172,192 @@ var _elm_lang$core$Tuple$first = function (_p6) {
 	var _p7 = _p6;
 	return _p7._0;
 };
+
+var _elm_lang$dom$Native_Dom = function() {
+
+var fakeNode = {
+	addEventListener: function() {},
+	removeEventListener: function() {}
+};
+
+var onDocument = on(typeof document !== 'undefined' ? document : fakeNode);
+var onWindow = on(typeof window !== 'undefined' ? window : fakeNode);
+
+function on(node)
+{
+	return function(eventName, decoder, toTask)
+	{
+		return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback) {
+
+			function performTask(event)
+			{
+				var result = A2(_elm_lang$core$Json_Decode$decodeValue, decoder, event);
+				if (result.ctor === 'Ok')
+				{
+					_elm_lang$core$Native_Scheduler.rawSpawn(toTask(result._0));
+				}
+			}
+
+			node.addEventListener(eventName, performTask);
+
+			return function()
+			{
+				node.removeEventListener(eventName, performTask);
+			};
+		});
+	};
+}
+
+var rAF = typeof requestAnimationFrame !== 'undefined'
+	? requestAnimationFrame
+	: function(callback) { callback(); };
+
+function withNode(id, doStuff)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		rAF(function()
+		{
+			var node = document.getElementById(id);
+			if (node === null)
+			{
+				callback(_elm_lang$core$Native_Scheduler.fail({ ctor: 'NotFound', _0: id }));
+				return;
+			}
+			callback(_elm_lang$core$Native_Scheduler.succeed(doStuff(node)));
+		});
+	});
+}
+
+
+// FOCUS
+
+function focus(id)
+{
+	return withNode(id, function(node) {
+		node.focus();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function blur(id)
+{
+	return withNode(id, function(node) {
+		node.blur();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SCROLLING
+
+function getScrollTop(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollTop;
+	});
+}
+
+function setScrollTop(id, desiredScrollTop)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = desiredScrollTop;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toBottom(id)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = node.scrollHeight;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function getScrollLeft(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollLeft;
+	});
+}
+
+function setScrollLeft(id, desiredScrollLeft)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = desiredScrollLeft;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toRight(id)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = node.scrollWidth;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SIZE
+
+function width(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollWidth;
+			case 'VisibleContent':
+				return node.clientWidth;
+			case 'VisibleContentWithBorders':
+				return node.offsetWidth;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.right - rect.left;
+		}
+	});
+}
+
+function height(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollHeight;
+			case 'VisibleContent':
+				return node.clientHeight;
+			case 'VisibleContentWithBorders':
+				return node.offsetHeight;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.bottom - rect.top;
+		}
+	});
+}
+
+return {
+	onDocument: F3(onDocument),
+	onWindow: F3(onWindow),
+
+	focus: focus,
+	blur: blur,
+
+	getScrollTop: getScrollTop,
+	setScrollTop: F2(setScrollTop),
+	getScrollLeft: getScrollLeft,
+	setScrollLeft: F2(setScrollLeft),
+	toBottom: toBottom,
+	toRight: toRight,
+
+	height: F2(height),
+	width: F2(width)
+};
+
+}();
+
+var _elm_lang$dom$Dom_LowLevel$onWindow = _elm_lang$dom$Native_Dom.onWindow;
+var _elm_lang$dom$Dom_LowLevel$onDocument = _elm_lang$dom$Native_Dom.onDocument;
 
 var _elm_lang$virtual_dom$VirtualDom_Debug$wrap;
 var _elm_lang$virtual_dom$VirtualDom_Debug$wrapWithFlags;
@@ -8260,6 +8862,175 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _elm_lang$keyboard$Keyboard$onSelfMsg = F3(
+	function (router, _p0, state) {
+		var _p1 = _p0;
+		var _p2 = A2(_elm_lang$core$Dict$get, _p1.category, state);
+		if (_p2.ctor === 'Nothing') {
+			return _elm_lang$core$Task$succeed(state);
+		} else {
+			var send = function (tagger) {
+				return A2(
+					_elm_lang$core$Platform$sendToApp,
+					router,
+					tagger(_p1.keyCode));
+			};
+			return A2(
+				_elm_lang$core$Task$andThen,
+				function (_p3) {
+					return _elm_lang$core$Task$succeed(state);
+				},
+				_elm_lang$core$Task$sequence(
+					A2(_elm_lang$core$List$map, send, _p2._0.taggers)));
+		}
+	});
+var _elm_lang$keyboard$Keyboard_ops = _elm_lang$keyboard$Keyboard_ops || {};
+_elm_lang$keyboard$Keyboard_ops['&>'] = F2(
+	function (task1, task2) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (_p4) {
+				return task2;
+			},
+			task1);
+	});
+var _elm_lang$keyboard$Keyboard$init = _elm_lang$core$Task$succeed(_elm_lang$core$Dict$empty);
+var _elm_lang$keyboard$Keyboard$categorizeHelpHelp = F2(
+	function (value, maybeValues) {
+		var _p5 = maybeValues;
+		if (_p5.ctor === 'Nothing') {
+			return _elm_lang$core$Maybe$Just(
+				{
+					ctor: '::',
+					_0: value,
+					_1: {ctor: '[]'}
+				});
+		} else {
+			return _elm_lang$core$Maybe$Just(
+				{ctor: '::', _0: value, _1: _p5._0});
+		}
+	});
+var _elm_lang$keyboard$Keyboard$categorizeHelp = F2(
+	function (subs, subDict) {
+		categorizeHelp:
+		while (true) {
+			var _p6 = subs;
+			if (_p6.ctor === '[]') {
+				return subDict;
+			} else {
+				var _v4 = _p6._1,
+					_v5 = A3(
+					_elm_lang$core$Dict$update,
+					_p6._0._0,
+					_elm_lang$keyboard$Keyboard$categorizeHelpHelp(_p6._0._1),
+					subDict);
+				subs = _v4;
+				subDict = _v5;
+				continue categorizeHelp;
+			}
+		}
+	});
+var _elm_lang$keyboard$Keyboard$categorize = function (subs) {
+	return A2(_elm_lang$keyboard$Keyboard$categorizeHelp, subs, _elm_lang$core$Dict$empty);
+};
+var _elm_lang$keyboard$Keyboard$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$keyboard$Keyboard$subscription = _elm_lang$core$Native_Platform.leaf('Keyboard');
+var _elm_lang$keyboard$Keyboard$Watcher = F2(
+	function (a, b) {
+		return {taggers: a, pid: b};
+	});
+var _elm_lang$keyboard$Keyboard$Msg = F2(
+	function (a, b) {
+		return {category: a, keyCode: b};
+	});
+var _elm_lang$keyboard$Keyboard$onEffects = F3(
+	function (router, newSubs, oldState) {
+		var rightStep = F3(
+			function (category, taggers, task) {
+				return A2(
+					_elm_lang$core$Task$andThen,
+					function (state) {
+						return A2(
+							_elm_lang$core$Task$andThen,
+							function (pid) {
+								return _elm_lang$core$Task$succeed(
+									A3(
+										_elm_lang$core$Dict$insert,
+										category,
+										A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, pid),
+										state));
+							},
+							_elm_lang$core$Process$spawn(
+								A3(
+									_elm_lang$dom$Dom_LowLevel$onDocument,
+									category,
+									_elm_lang$keyboard$Keyboard$keyCode,
+									function (_p7) {
+										return A2(
+											_elm_lang$core$Platform$sendToSelf,
+											router,
+											A2(_elm_lang$keyboard$Keyboard$Msg, category, _p7));
+									})));
+					},
+					task);
+			});
+		var bothStep = F4(
+			function (category, _p8, taggers, task) {
+				var _p9 = _p8;
+				return A2(
+					_elm_lang$core$Task$map,
+					A2(
+						_elm_lang$core$Dict$insert,
+						category,
+						A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, _p9.pid)),
+					task);
+			});
+		var leftStep = F3(
+			function (category, _p10, task) {
+				var _p11 = _p10;
+				return A2(
+					_elm_lang$keyboard$Keyboard_ops['&>'],
+					_elm_lang$core$Process$kill(_p11.pid),
+					task);
+			});
+		return A6(
+			_elm_lang$core$Dict$merge,
+			leftStep,
+			bothStep,
+			rightStep,
+			oldState,
+			_elm_lang$keyboard$Keyboard$categorize(newSubs),
+			_elm_lang$core$Task$succeed(_elm_lang$core$Dict$empty));
+	});
+var _elm_lang$keyboard$Keyboard$MySub = F2(
+	function (a, b) {
+		return {ctor: 'MySub', _0: a, _1: b};
+	});
+var _elm_lang$keyboard$Keyboard$presses = function (tagger) {
+	return _elm_lang$keyboard$Keyboard$subscription(
+		A2(_elm_lang$keyboard$Keyboard$MySub, 'keypress', tagger));
+};
+var _elm_lang$keyboard$Keyboard$downs = function (tagger) {
+	return _elm_lang$keyboard$Keyboard$subscription(
+		A2(_elm_lang$keyboard$Keyboard$MySub, 'keydown', tagger));
+};
+var _elm_lang$keyboard$Keyboard$ups = function (tagger) {
+	return _elm_lang$keyboard$Keyboard$subscription(
+		A2(_elm_lang$keyboard$Keyboard$MySub, 'keyup', tagger));
+};
+var _elm_lang$keyboard$Keyboard$subMap = F2(
+	function (func, _p12) {
+		var _p13 = _p12;
+		return A2(
+			_elm_lang$keyboard$Keyboard$MySub,
+			_p13._0,
+			function (_p14) {
+				return func(
+					_p13._1(_p14));
+			});
+	});
+_elm_lang$core$Native_Platform.effectManagers['Keyboard'] = {pkg: 'elm-lang/keyboard', init: _elm_lang$keyboard$Keyboard$init, onEffects: _elm_lang$keyboard$Keyboard$onEffects, onSelfMsg: _elm_lang$keyboard$Keyboard$onSelfMsg, tag: 'sub', subMap: _elm_lang$keyboard$Keyboard$subMap};
+
 var _elm_lang$svg$Svg$map = _elm_lang$virtual_dom$VirtualDom$map;
 var _elm_lang$svg$Svg$text = _elm_lang$virtual_dom$VirtualDom$text;
 var _elm_lang$svg$Svg$svgNamespace = A2(
@@ -8757,7 +9528,7 @@ var _user$project$Scene$guitar = {
 var _user$project$Scene$books = {
 	kind: _user$project$Scene$Simple,
 	hitbox: {x: 790, y: 970, width: 150, height: 100},
-	description: '\n        Some books are lying on the table. \"Superintelligence: Paths, Dangers, Strategies\", and \"How Emotions Are Made\". Some page are heavily annotated with comments and drawings; it looks like Ada\'s handwriting.\n\n        Most of the annotations and comments elude you.\n\n        Inside the cover of one of the books, you find the following note, in capital letters, underlined multiple times: \n                                                                              \n        455 BROADWAY - USE KEYFOB\n        -------------------------\n        ',
+	description: '\n        Some books are lying on the table. \"Superintelligence: Paths, Dangers, Strategies\", and \"How Emotions Are Made\". Some page are heavily annotated with comments and drawings; it looks like Ada\'s handwriting.\n\n        Most of the annotations and comments elude you.\n\n        Inside the cover of one of the books, you find the following note, in capital letters, underlined multiple times:\n\n        455 BROADWAY - USE KEYFOB\n        -------------------------\n        ',
 	imagePath: _elm_lang$core$Maybe$Nothing
 };
 var _user$project$Scene$library = {
@@ -8951,29 +9722,6 @@ var _user$project$Scene$Use = function (a) {
 var _user$project$Scene$Take = {ctor: 'Take'};
 var _user$project$Scene$Move = {ctor: 'Move'};
 var _user$project$Scene$Look = {ctor: 'Look'};
-var _user$project$Scene$init = {
-	currentAction: _user$project$Scene$Look,
-	currentLocation: _user$project$Scene$apartmentStreet,
-	otherLocations: {
-		ctor: '::',
-		_0: _user$project$Scene$apartment,
-		_1: {
-			ctor: '::',
-			_0: _user$project$Scene$rcStreet,
-			_1: {
-				ctor: '::',
-				_0: _user$project$Scene$rcWorkshop,
-				_1: {ctor: '[]'}
-			}
-		}
-	},
-	infoText: '\n       That\'s it. Ada\'s place in East Harlem. You still can\'t believe she\'s gone. It all happened so fast. You\'ve been there so many times, but this is the last.\n\n       You were her only... friend? She used that word once. You had never heard this term before. It seemed positive.\n\n       Hopefully they haven\'t gotten here before you. You feel it\'s your responsibility to pick up her belongings before they get rid of them all. And maybe you\'ll be able to find some answers too?\n       ',
-	inventory: {
-		ctor: '::',
-		_0: _user$project$Scene$Keyset,
-		_1: {ctor: '[]'}
-	}
-};
 var _user$project$Scene$changeLocation = F2(
 	function (location, _p2) {
 		var _p3 = _p2;
@@ -9043,99 +9791,173 @@ var _user$project$Scene$useItem = F3(
 			return doesntDoAnything;
 		}
 	});
-var _user$project$Scene$update = F2(
-	function (message, model) {
-		var _p13 = message;
-		switch (_p13.ctor) {
-			case 'ChangeAction':
+var _user$project$Scene$initialState = {
+	currentAction: _user$project$Scene$Look,
+	currentLocation: _user$project$Scene$apartmentStreet,
+	otherLocations: {
+		ctor: '::',
+		_0: _user$project$Scene$apartment,
+		_1: {
+			ctor: '::',
+			_0: _user$project$Scene$rcStreet,
+			_1: {
+				ctor: '::',
+				_0: _user$project$Scene$rcWorkshop,
+				_1: {ctor: '[]'}
+			}
+		}
+	},
+	infoText: '\n       That\'s it. Ada\'s place in East Harlem. You still can\'t believe she\'s gone. It all happened so fast. You\'ve been there so many times, but this is the last.\n\n       You were her only... friend? She used that word once. You had never heard this term before. It seemed positive.\n\n       Hopefully they haven\'t gotten here before you. You feel it\'s your responsibility to pick up her belongings before they get rid of them all. And maybe you\'ll be able to find some answers too?\n       ',
+	inventory: {
+		ctor: '::',
+		_0: _user$project$Scene$Keyset,
+		_1: {ctor: '[]'}
+	}
+};
+var _user$project$Scene$init = {ctor: '_Tuple2', _0: _user$project$Scene$initialState, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Scene$handleKeyboardShortcuts = F2(
+	function (keyCode, model) {
+		var chr = _elm_lang$core$String$fromChar(
+			_elm_lang$core$Char$fromCode(keyCode));
+		var _p13 = chr;
+		switch (_p13) {
+			case 'L':
 				return _elm_lang$core$Native_Utils.update(
 					model,
-					{currentAction: _p13._0});
-			case 'ExecuteAction':
-				var _p18 = _p13._0;
-				var _p14 = model.currentAction;
-				switch (_p14.ctor) {
-					case 'Look':
-						return _elm_lang$core$Native_Utils.update(
-							model,
-							{infoText: _p18.description});
-					case 'Take':
-						var _p15 = _p18.kind;
-						if (_p15.ctor === 'Item') {
-							var _p16 = _p15._0;
-							return _elm_lang$core$Native_Utils.update(
-								model,
-								{
-									inventory: {ctor: '::', _0: _p16, _1: model.inventory},
-									currentLocation: A2(_user$project$Scene$takeItemFromLocation, _p18, model.currentLocation),
-									currentAction: _user$project$Scene$Look,
-									infoText: A2(
-										_elm_lang$core$Basics_ops['++'],
-										'You have acquired ',
-										A2(
-											_elm_lang$core$Basics_ops['++'],
-											_elm_lang$core$Basics$toString(_p16),
-											'!'))
-								});
-						} else {
-							return _elm_lang$core$Native_Utils.update(
-								model,
-								{infoText: 'You can\'t take that.'});
-						}
-					case 'Move':
-						var _p17 = _p18.kind;
-						if (_p17.ctor === 'Portal') {
-							return _p17._1._0(model) ? A2(_user$project$Scene$changeLocation, _p17._0, model) : _elm_lang$core$Native_Utils.update(
-								model,
-								{infoText: 'You don\'t feel like it\'s time to go there yet.'});
-						} else {
-							return _elm_lang$core$Native_Utils.update(
-								model,
-								{infoText: 'You can\'t walk there.'});
-						}
-					default:
-						return A3(_user$project$Scene$useItem, _p14._0, _p18, model);
-				}
+					{currentAction: _user$project$Scene$Look});
+			case 'M':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{currentAction: _user$project$Scene$Move});
+			case 'T':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{currentAction: _user$project$Scene$Take});
 			default:
-				var _p19 = model.currentAction;
-				switch (_p19.ctor) {
-					case 'Look':
-						return _elm_lang$core$Native_Utils.update(
-							model,
-							{infoText: model.currentLocation.description});
-					case 'Move':
-						return _elm_lang$core$Native_Utils.update(
-							model,
-							{infoText: 'You are already here.'});
-					default:
-						return model;
+				var items = _elm_lang$core$Array$fromList(model.inventory);
+				var selectedItem = A2(
+					_elm_lang$core$Maybe$andThen,
+					function (idx) {
+						return A2(_elm_lang$core$Array$get, idx - 1, items);
+					},
+					_elm_lang$core$Result$toMaybe(
+						_elm_lang$core$String$toInt(chr)));
+				var _p14 = selectedItem;
+				if (_p14.ctor === 'Just') {
+					return _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							currentAction: _user$project$Scene$Use(_p14._0)
+						});
+				} else {
+					return model;
 				}
 		}
 	});
+var _user$project$Scene$update = F2(
+	function (message, model) {
+		var updatedModel = function () {
+			var _p15 = message;
+			switch (_p15.ctor) {
+				case 'ChangeAction':
+					return _elm_lang$core$Native_Utils.update(
+						model,
+						{currentAction: _p15._0});
+				case 'ExecuteAction':
+					var _p20 = _p15._0;
+					var _p16 = model.currentAction;
+					switch (_p16.ctor) {
+						case 'Look':
+							return _elm_lang$core$Native_Utils.update(
+								model,
+								{infoText: _p20.description});
+						case 'Take':
+							var _p17 = _p20.kind;
+							if (_p17.ctor === 'Item') {
+								var _p18 = _p17._0;
+								return _elm_lang$core$Native_Utils.update(
+									model,
+									{
+										inventory: {ctor: '::', _0: _p18, _1: model.inventory},
+										currentLocation: A2(_user$project$Scene$takeItemFromLocation, _p20, model.currentLocation),
+										currentAction: _user$project$Scene$Look,
+										infoText: A2(
+											_elm_lang$core$Basics_ops['++'],
+											'You have acquired ',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(_p18),
+												'!'))
+									});
+							} else {
+								return _elm_lang$core$Native_Utils.update(
+									model,
+									{infoText: 'You can\'t take that.'});
+							}
+						case 'Move':
+							var _p19 = _p20.kind;
+							if (_p19.ctor === 'Portal') {
+								return _p19._1._0(model) ? A2(_user$project$Scene$changeLocation, _p19._0, model) : _elm_lang$core$Native_Utils.update(
+									model,
+									{infoText: 'You don\'t feel like it\'s time to go there yet.'});
+							} else {
+								return _elm_lang$core$Native_Utils.update(
+									model,
+									{infoText: 'You can\'t walk there.'});
+							}
+						default:
+							return A3(_user$project$Scene$useItem, _p16._0, _p20, model);
+					}
+				case 'LocationAction':
+					var _p21 = model.currentAction;
+					switch (_p21.ctor) {
+						case 'Look':
+							return _elm_lang$core$Native_Utils.update(
+								model,
+								{infoText: model.currentLocation.description});
+						case 'Move':
+							return _elm_lang$core$Native_Utils.update(
+								model,
+								{infoText: 'You are already here.'});
+						default:
+							return model;
+					}
+				default:
+					return A2(_user$project$Scene$handleKeyboardShortcuts, _p15._0, model);
+			}
+		}();
+		return {ctor: '_Tuple2', _0: updatedModel, _1: _elm_lang$core$Platform_Cmd$none};
+	});
+var _user$project$Scene$KeyMsg = function (a) {
+	return {ctor: 'KeyMsg', _0: a};
+};
+var _user$project$Scene$subscriptions = function (model) {
+	return _elm_lang$keyboard$Keyboard$downs(_user$project$Scene$KeyMsg);
+};
 var _user$project$Scene$LocationAction = {ctor: 'LocationAction'};
 var _user$project$Scene$ExecuteAction = function (a) {
 	return {ctor: 'ExecuteAction', _0: a};
 };
-var _user$project$Scene$svgViewEntity = function (_p20) {
-	var _p21 = _p20;
-	var _p24 = _p21.hitbox;
-	var _p23 = _p21;
+var _user$project$Scene$svgViewEntity = function (_p22) {
+	var _p23 = _p22;
+	var _p26 = _p23.hitbox;
+	var _p25 = _p23;
 	var attributes = {
 		ctor: '::',
 		_0: _elm_lang$svg$Svg_Attributes$x(
-			_elm_lang$core$Basics$toString(_p24.x)),
+			_elm_lang$core$Basics$toString(_p26.x)),
 		_1: {
 			ctor: '::',
 			_0: _elm_lang$svg$Svg_Attributes$y(
-				_elm_lang$core$Basics$toString(_p24.y)),
+				_elm_lang$core$Basics$toString(_p26.y)),
 			_1: {
 				ctor: '::',
 				_0: _elm_lang$svg$Svg_Attributes$height(
-					_elm_lang$core$Basics$toString(_p24.height)),
+					_elm_lang$core$Basics$toString(_p26.height)),
 				_1: {
 					ctor: '::',
 					_0: _elm_lang$svg$Svg_Attributes$width(
-						_elm_lang$core$Basics$toString(_p24.width)),
+						_elm_lang$core$Basics$toString(_p26.width)),
 					_1: {
 						ctor: '::',
 						_0: _elm_lang$svg$Svg_Attributes$class(
@@ -9148,14 +9970,14 @@ var _user$project$Scene$svgViewEntity = function (_p20) {
 									_1: {
 										ctor: '::',
 										_0: _elm_lang$core$String$toLower(
-											_elm_lang$core$Basics$toString(_p23.kind)),
+											_elm_lang$core$Basics$toString(_p25.kind)),
 										_1: {ctor: '[]'}
 									}
 								})),
 						_1: {
 							ctor: '::',
 							_0: _elm_lang$html$Html_Events$onClick(
-								_user$project$Scene$ExecuteAction(_p23)),
+								_user$project$Scene$ExecuteAction(_p25)),
 							_1: {ctor: '[]'}
 						}
 					}
@@ -9163,14 +9985,14 @@ var _user$project$Scene$svgViewEntity = function (_p20) {
 			}
 		}
 	};
-	var _p22 = _p21.imagePath;
-	if (_p22.ctor === 'Just') {
+	var _p24 = _p23.imagePath;
+	if (_p24.ctor === 'Just') {
 		return A2(
 			_elm_lang$svg$Svg$image,
 			{
 				ctor: '::',
 				_0: _elm_lang$svg$Svg_Attributes$xlinkHref(
-					A2(_elm_lang$core$Basics_ops['++'], 'img/', _p22._0)),
+					A2(_elm_lang$core$Basics_ops['++'], 'img/', _p24._0)),
 				_1: attributes
 			},
 			{ctor: '[]'});
@@ -9215,15 +10037,15 @@ var _user$project$Scene$renderActionButton = F2(
 				_1: {ctor: '[]'}
 			});
 	});
-var _user$project$Scene$renderInventoryItem = F2(
-	function (action, item) {
+var _user$project$Scene$renderInventoryItem = F3(
+	function (action, index, item) {
 		var cssClasses = {
 			ctor: '::',
 			_0: 'inventoryitem',
 			_1: function () {
-				var _p25 = action;
-				if (_p25.ctor === 'Use') {
-					return _elm_lang$core$Native_Utils.eq(item, _p25._0) ? {
+				var _p27 = action;
+				if (_p27.ctor === 'Use') {
+					return _elm_lang$core$Native_Utils.eq(item, _p27._0) ? {
 						ctor: '::',
 						_0: 'selected',
 						_1: {ctor: '[]'}
@@ -9233,6 +10055,13 @@ var _user$project$Scene$renderInventoryItem = F2(
 				}
 			}()
 		};
+		var txt = A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(index + 1),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				' ',
+				_elm_lang$core$Basics$toString(item)));
 		var itemButton = A2(
 			_elm_lang$html$Html$button,
 			{
@@ -9244,8 +10073,7 @@ var _user$project$Scene$renderInventoryItem = F2(
 			},
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html$text(
-					_elm_lang$core$Basics$toString(item)),
+				_0: _elm_lang$html$Html$text(txt),
 				_1: {ctor: '[]'}
 			});
 		return A2(
@@ -9262,18 +10090,18 @@ var _user$project$Scene$renderInventoryItem = F2(
 				_1: {ctor: '[]'}
 			});
 	});
-var _user$project$Scene$view = function (_p26) {
-	var _p27 = _p26;
-	var _p30 = _p27;
-	var _p29 = _p27.inventory;
-	var _p28 = _p27.currentAction;
-	var entityRects = A2(_elm_lang$core$List$map, _user$project$Scene$svgViewEntity, _p30.currentLocation.entities);
+var _user$project$Scene$view = function (_p28) {
+	var _p29 = _p28;
+	var _p32 = _p29;
+	var _p31 = _p29.inventory;
+	var _p30 = _p29.currentAction;
+	var entityRects = A2(_elm_lang$core$List$map, _user$project$Scene$svgViewEntity, _p32.currentLocation.entities);
 	var sceneBackground = A2(
 		_elm_lang$svg$Svg$image,
 		{
 			ctor: '::',
 			_0: _elm_lang$svg$Svg_Attributes$xlinkHref(
-				A2(_elm_lang$core$Basics_ops['++'], 'img/scenes/', _p30.currentLocation.imagePath)),
+				A2(_elm_lang$core$Basics_ops['++'], 'img/scenes/', _p32.currentLocation.imagePath)),
 			_1: {
 				ctor: '::',
 				_0: _elm_lang$html$Html_Events$onClick(_user$project$Scene$LocationAction),
@@ -9309,7 +10137,7 @@ var _user$project$Scene$view = function (_p26) {
 			_1: {
 				ctor: '::',
 				_0: _elm_lang$html$Html_Attributes$class(
-					_user$project$Scene$actionClass(_p28)),
+					_user$project$Scene$actionClass(_p30)),
 				_1: {ctor: '[]'}
 			}
 		},
@@ -9329,7 +10157,7 @@ var _user$project$Scene$view = function (_p26) {
 				}),
 			_1: {ctor: '[]'}
 		});
-	var inventoryItems = _elm_lang$core$List$isEmpty(_p29) ? {
+	var inventoryItems = _elm_lang$core$List$isEmpty(_p31) ? {
 		ctor: '::',
 		_0: A2(
 			_elm_lang$html$Html$div,
@@ -9345,9 +10173,9 @@ var _user$project$Scene$view = function (_p26) {
 			}),
 		_1: {ctor: '[]'}
 	} : A2(
-		_elm_lang$core$List$map,
-		_user$project$Scene$renderInventoryItem(_p28),
-		_p29);
+		_elm_lang$core$List$indexedMap,
+		_user$project$Scene$renderInventoryItem(_p30),
+		_p31);
 	var inventoryPane = A2(
 		_elm_lang$html$Html$div,
 		{
@@ -9384,7 +10212,7 @@ var _user$project$Scene$view = function (_p26) {
 		});
 	var actionButtons = A2(
 		_elm_lang$core$List$map,
-		_user$project$Scene$renderActionButton(_p28),
+		_user$project$Scene$renderActionButton(_p30),
 		{
 			ctor: '::',
 			_0: _user$project$Scene$Look,
@@ -9440,7 +10268,7 @@ var _user$project$Scene$view = function (_p26) {
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(_p27.infoText),
+							_0: _elm_lang$html$Html$text(_p29.infoText),
 							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
@@ -9472,8 +10300,8 @@ var _user$project$Scene$view = function (_p26) {
 			}
 		});
 };
-var _user$project$Scene$main = _elm_lang$html$Html$beginnerProgram(
-	{model: _user$project$Scene$init, update: _user$project$Scene$update, view: _user$project$Scene$view})();
+var _user$project$Scene$main = _elm_lang$html$Html$program(
+	{init: _user$project$Scene$init, view: _user$project$Scene$view, update: _user$project$Scene$update, subscriptions: _user$project$Scene$subscriptions})();
 
 var Elm = {};
 Elm['Scene'] = Elm['Scene'] || {};
