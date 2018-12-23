@@ -245,7 +245,7 @@ portalIntoRC =
 
 crowbar =
     { kind = Item Crowbar
-    , hitbox = { x = 636, y = 1080-79-32, width = 66, height = 32 }
+    , hitbox = { x = 636, y = 1080-69-32, width = 66, height = 32 }
     , description = "A well blacksmithed sturdy steel crowbar."
     , imagePath = Just "items/crowbar.png"
     }
