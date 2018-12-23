@@ -1,37 +1,19 @@
 module Scene exposing (..)
 
+import Array
 import List
 import String
-import Html exposing (Html, beginnerProgram, div, button, img, text, node)
+import Char
+import Keyboard
+import Html exposing (Html, program, div, button, img, text, node)
 import Html.Attributes as HA
 import Html.Events exposing (onClick)
 import Svg exposing (Svg, svg, image, g, rect)
 import Svg.Attributes as SA
 import Svg.Attributes exposing (..)
 
-init =
-   { currentAction = Look
-   , currentLocation = apartmentStreet
-   , otherLocations = [apartment, rcStreet, rcWorkshop]
-   , infoText =
-       """
-       That's it. Ada's place in East Harlem. You still can't believe she's gone. It all happened so fast. You've been there so many times, but this is the last.
 
-       You were her only... friend? She used that word once. You had never heard this term before. It seemed positive.
-
-       Hopefully they haven't gotten here before you. You feel it's your responsibility to pick up her belongings before they get rid of them all. And maybe you'll be able to find some answers too?
-       """
-   , inventory = [ Keyset ]
-   }
-
-main =
-    beginnerProgram
-        { model = init
-        , update = update
-        , view = view
-        }
-
--- Model
+-- MODEL
 
 type alias Rect = {
     x : Int,
@@ -354,8 +336,8 @@ books =
 
         Most of the annotations and comments elude you.
 
-        Inside the cover of one of the books, you find the following note, in capital letters, underlined multiple times: 
-                                                                              
+        Inside the cover of one of the books, you find the following note, in capital letters, underlined multiple times:
+
         455 BROADWAY - USE KEYFOB
         -------------------------
         """
@@ -449,55 +431,105 @@ type Action
    | Take
    | Use InventoryItem
 
--- Update
+
+initialState: Model
+initialState =
+   { currentAction = Look
+   , currentLocation = apartmentStreet
+   , otherLocations = [apartment, rcStreet, rcWorkshop]
+   , infoText =
+       """
+       That's it. Ada's place in East Harlem. You still can't believe she's gone. It all happened so fast. You've been there so many times, but this is the last.
+
+       You were her only... friend? She used that word once. You had never heard this term before. It seemed positive.
+
+       Hopefully they haven't gotten here before you. You feel it's your responsibility to pick up her belongings before they get rid of them all. And maybe you'll be able to find some answers too?
+       """
+   , inventory = [ Keyset ]
+   }
+
+init : ( Model, Cmd Msg )
+init =
+    ( initialState, Cmd.none )
+
+-- UPDATE
+
 type Msg
     = ChangeAction Action
     | ExecuteAction Entity
     | LocationAction
+    | KeyMsg Keyboard.KeyCode
 
+handleKeyboardShortcuts : Int -> Model -> Model
+handleKeyboardShortcuts keyCode model =
+    let
+        chr = keyCode |> Char.fromCode |> String.fromChar
+    in
+       case chr of
+          "L" -> { model | currentAction = Look }
+          "M" -> { model | currentAction = Move }
+          "T" -> { model | currentAction = Take }
+          _ ->
+              let
+                  items = Array.fromList model.inventory
+                  selectedItem =
+                      chr
+                          |> String.toInt
+                          |> Result.toMaybe
+                          |> Maybe.andThen (\idx -> Array.get (idx - 1) items)
+              in
+                  case selectedItem of
+                      Just it -> { model | currentAction = Use it }
+                      Nothing -> model
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
-    case message of
-        ChangeAction action ->
-            { model | currentAction = action }
+    let
+        updatedModel =
+            case message of
+                ChangeAction action ->
+                    { model | currentAction = action }
 
-        ExecuteAction entity ->
-            case model.currentAction of
-                Look ->
-                    { model | infoText = entity.description }
+                ExecuteAction entity ->
+                    case model.currentAction of
+                        Look ->
+                            { model | infoText = entity.description }
 
-                Take ->
-                    case entity.kind of
-                        Item item ->
-                            { model
-                                | inventory = (item :: model.inventory)
-                                , currentLocation = takeItemFromLocation entity model.currentLocation
-                                , currentAction = Look
-                                , infoText = ("You have acquired " ++ (toString item) ++ "!")
-                            }
-                        _ ->
-                            { model | infoText = "You can't take that." }
+                        Take ->
+                            case entity.kind of
+                                Item item ->
+                                    { model
+                                        | inventory = (item :: model.inventory)
+                                        , currentLocation = takeItemFromLocation entity model.currentLocation
+                                        , currentAction = Look
+                                        , infoText = ("You have acquired " ++ (toString item) ++ "!")
+                                    }
+                                _ ->
+                                    { model | infoText = "You can't take that." }
 
-                Move ->
-                    case entity.kind of
-                        Portal location (ActiveWhen isPortalActive) ->
-                            if isPortalActive model then
-                                changeLocation location model
-                            else
-                                { model | infoText = "You don't feel like it's time to go there yet." }
-                        _ ->
-                            { model | infoText = "You can't walk there." }
+                        Move ->
+                            case entity.kind of
+                                Portal location (ActiveWhen isPortalActive) ->
+                                    if isPortalActive model then
+                                        changeLocation location model
+                                    else
+                                        { model | infoText = "You don't feel like it's time to go there yet." }
+                                _ ->
+                                    { model | infoText = "You can't walk there." }
 
-                Use item ->
-                    useItem item entity model
+                        Use item ->
+                            useItem item entity model
 
-        LocationAction -> case model.currentAction of
-            Look -> { model | infoText = model.currentLocation.description }
-            Move -> { model | infoText = "You are already here." }
-            _ -> model
+                LocationAction -> case model.currentAction of
+                    Look -> { model | infoText = model.currentLocation.description }
+                    Move -> { model | infoText = "You are already here." }
+                    _ -> model
+                KeyMsg keyCode -> handleKeyboardShortcuts keyCode model
 
--- View
+    in
+        ( updatedModel, Cmd.none )
+
+-- VIEW
 
 renderActionButton : Action -> Action -> Html Msg
 renderActionButton currentAction a =
@@ -592,3 +624,21 @@ svgViewEntity ({hitbox, imagePath} as entity) =
                image (xlinkHref ("img/" ++ path) :: attributes) []
            Nothing ->
                rect attributes []
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Keyboard.downs KeyMsg
+
+-- MAIN
+
+main =
+    program
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
+
