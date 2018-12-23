@@ -506,10 +506,11 @@ renderActionButton currentAction a =
     in
         button [ onClick (ChangeAction a), classes ] [ text (toString a) ]
 
-renderInventoryItem : Action -> InventoryItem -> Html Msg
-renderInventoryItem action item =
+renderInventoryItem : Action -> Int -> InventoryItem -> Html Msg
+renderInventoryItem action index item =
     let
-        itemButton = button [ onClick (ChangeAction (Use item)) ] [ text (toString item) ]
+        txt = (toString (index + 1)) ++ " " ++ (toString item)
+        itemButton = button [ onClick (ChangeAction (Use item)) ] [ text txt ]
         cssClasses = "inventoryitem" ::
             case action of
                 Use selectedItem -> (if item == selectedItem then ["selected"] else [])
@@ -533,7 +534,7 @@ view ({inventory, currentAction, infoText} as model) =
             if List.isEmpty inventory then
                 [ div [ class "inventoryempty" ] [ text "(empty)" ] ]
             else
-                inventory |> List.map (renderInventoryItem currentAction)
+                inventory |> List.indexedMap (renderInventoryItem currentAction)
 
         -- TODO: Factor size of backgrounds and viewBox into a shared constant
         sceneBackground = image
